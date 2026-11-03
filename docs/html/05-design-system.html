@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Design system | Mobve audit</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&amp;display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../design-system/mobve-design-system.css">
+<style>
+:root { --font-sans: "Inter", "Inter Variable", system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif; color-scheme: light; }
+body { background: var(--color-bg); }
+.docnav { display: flex; flex-wrap: wrap; gap: var(--space-1); padding: var(--space-3) var(--gutter); background: var(--color-paper); border-bottom: 1px solid var(--color-divider); }
+.docnav a { display: inline-flex; align-items: center; min-height: 36px; padding: 0 var(--space-3); border-radius: var(--radius-sm); color: var(--color-muted); font-size: var(--fs-ui); font-weight: var(--fw-medium); text-decoration: none; }
+.docnav a:hover { background: var(--color-tint); color: var(--color-primary); }
+.docnav a[aria-current="page"] { background: var(--color-tint); color: var(--color-primary); }
+.doc { max-width: 900px; margin: var(--space-6) auto var(--space-9); padding: var(--space-7) var(--space-6); background: var(--color-paper); border: 1px solid var(--color-divider); border-radius: var(--radius-md); display: grid; gap: var(--space-4); }
+.doc h1 { font-size: clamp(2rem, 1.5rem + 2vw, 2.75rem); line-height: 1.12; }
+.doc h2 { font-size: var(--fs-h3); line-height: var(--lh-h3); letter-spacing: var(--ls-h3); margin-top: var(--space-5); padding-top: var(--space-4); border-top: 1px solid var(--color-divider); }
+.doc h3 { font-size: 1.125rem; line-height: 1.35; letter-spacing: 0; margin-top: var(--space-3); }
+.doc p, .doc li { max-width: 75ch; }
+.doc ul, .doc ol { margin: 0; padding-left: 1.4rem; display: grid; gap: var(--space-2); }
+.doc code { font-size: 0.85em; background: var(--color-bg); border: 1px solid var(--color-divider); padding: 0 5px; border-radius: 5px; overflow-wrap: anywhere; }
+.table-wrap { overflow-x: auto; border: 1px solid var(--color-divider); border-radius: var(--radius-sm); }
+.doc .table th, .doc .table td { vertical-align: top; }
+.docfoot { max-width: 900px; margin: 0 auto var(--space-7); padding: 0 var(--space-6); }
+@page { size: A4; margin: 16mm 14mm; }
+@media print {
+  body { background: #fff; }
+  .docnav, .docfoot { display: none; }
+  .doc { margin: 0; padding: 0; border: 0; max-width: none; }
+  .doc h2 { break-after: avoid; }
+  .doc h3 { break-after: avoid; }
+  .table-wrap { overflow: visible; border: 0; }
+  .doc .table { font-size: 11px; }
+  .doc .table tr { break-inside: avoid; }
+  a { color: var(--color-ink); }
+}
+</style>
+</head>
+<body>
+<nav class="docnav" aria-label="Documents"><a href="00-summary.html">Summary</a><a href="01-website-audit.html">Website audit</a><a href="02-indexing.html">Indexing</a><a href="03-app-audit.html">App audit</a><a href="04-app-click-test.html">App click test</a><a href="05-design-system.html" aria-current="page">Design system</a><a href="06-prototypes.html">Prototypes</a></nav>
+<main class="doc">
+<h1 id="design-system">Design system</h1>
+<p>Date: 2026-11-03. One token layer for mobve.com and the staff app. Source of values: <code>design-system/mobve-design-system.css</code>. Reference page with live specimens: <code>design-system/index.html</code>.</p>
+<h2 id="1-principles">1. Principles</h2>
+<ul><li>Few chosen colors; every state and tint is calculated from them with color-mix(), so nothing drifts out of sync.</li><li>Every interactive control has hover, pressed, focus, disabled, loading and error states, each distinct in color and position.</li><li>Nothing smaller than 12 px; controls 44 px high.</li><li>Color never carries meaning alone: status always comes with an icon or text.</li><li>Target: WCAG 2.2 AA. Every text pair is calculated.</li></ul>
+<h2 id="2-color">2. Color</h2>
+<h3 id="2-1-base-6">2.1 Base, 6</h3>
+<div class="table-wrap"><table class="table"><thead><tr><th>Token</th><th>Value</th><th>Use</th><th>Contrast</th></tr></thead><tbody><tr><td>--color-primary</td><td>#0b63ce</td><td>Buttons, links, selected state, focus, information, logo</td><td>white text 5.69:1</td></tr><tr><td>--color-secondary</td><td>#ffc845</td><td>Highlights, featured badge, second chart series, accents on the dark band. Never text on paper</td><td>ink on it 11.21:1</td></tr><tr><td>--color-ink</td><td>#101b2b</td><td>All text and the dark band</td><td>17.3:1 on paper</td></tr><tr><td>--color-paper</td><td>#ffffff</td><td>Surfaces: header, sidebar, cards, panels, inputs</td><td></td></tr><tr><td>--color-muted</td><td>#536173</td><td>Secondary text, captions, placeholders and control borders</td><td>6.32:1 on paper</td></tr><tr><td>--color-bg</td><td>#fafafa</td><td>Page background, as in the current app</td><td>muted text 6.05:1</td></tr></tbody></table></div>
+<h3 id="2-2-semantic-from-traffic-lights">2.2 Semantic, from traffic lights</h3>
+<div class="table-wrap"><table class="table"><thead><tr><th>State</th><th>Signal</th><th>Text</th><th>Tint</th><th>Reference</th></tr></thead><tbody><tr><td>Success</td><td>#03a14a (3.39:1 on paper, graphics)</td><td>#09672e (7.02:1)</td><td>#e1f4e9, 12 percent</td><td>green #00a651</td></tr><tr><td>Warning</td><td>#f7a30d (ink on it 8.4:1)</td><td>#7d5002 (6.95:1)</td><td>#fef0d8, 16 percent</td><td>amber #ffbf00</td></tr><tr><td>Error</td><td>#d73431 (white text 4.75:1)</td><td>#a12623 (7.45:1)</td><td>#fbebea, 10 percent</td><td>red #e30613</td></tr><tr><td>Information</td><td>uses the primary and its tint</td><td></td><td></td><td></td></tr></tbody></table></div>
+<p>The signal marks the state (badge dot, notice border, error border, destructive button, chart status). Text stays in the dark version. The amber warning sits close to the secondary yellow: keep the secondary away from status and always show a warning with its icon and text.</p>
+<h3 id="2-3-appointment-categories">2.3 Appointment categories</h3>
+<div class="table-wrap"><table class="table"><thead><tr><th>Category</th><th>Value</th><th>On paper</th><th>Before</th><th>Purposes (inferred, to confirm)</th></tr></thead><tbody><tr><td>Tour</td><td>#0891c9</td><td>3.56:1</td><td>#2a78d6</td><td>Tour, Second Tour</td></tr><tr><td>Lease</td><td>#794db6</td><td>5.92:1</td><td>#8654b3</td><td>Lease Signing, Renewal Meeting, Document Review, Key Pickup</td></tr><tr><td>Inspection</td><td>#6a7a31</td><td>4.73:1</td><td>#167a77</td><td>Move In Inspection, Move Out Inspection, Move In</td></tr><tr><td>Billing</td><td>#b55fba</td><td>3.95:1</td><td>#5956c9</td><td>Billing or payment consultation</td></tr><tr><td>Maintenance</td><td>#864821</td><td>7.09:1</td><td>#b54242</td><td>Maintenance Visit</td></tr></tbody></table></div>
+<p>Hues avoid the primary, the secondary and the orange-red arc of warning and error, and are at least 0.12 apart in OKLab. They mark dots, event edges and bars; text on them is ink on a 12 percent tint. "General" uses the muted gray.</p>
+<h3 id="2-4-calculated-not-chosen">2.4 Calculated, not chosen</h3>
+<div class="table-wrap"><table class="table"><thead><tr><th>Token</th><th>Formula</th><th>Result</th><th>Use</th></tr></thead><tbody><tr><td>--color-divider</td><td>muted 20 percent over paper</td><td>#dddfe3</td><td>Dividers, card edges, neutral badge, disabled field</td></tr><tr><td>--color-tint</td><td>primary 10 percent over paper</td><td>#e7effa</td><td>Hover fills, selected, information notice</td></tr><tr><td>--color-tint-strong</td><td>primary 24 percent over paper</td><td>#c4daf3</td><td>Pressed fills</td></tr><tr><td>--color-primary-hover</td><td>primary with 22 percent black</td><td>#094da1</td><td>Hover (white 8.11:1)</td></tr><tr><td>--color-primary-active</td><td>primary with 44 percent black</td><td>#063773</td><td>Pressed (white 11.66:1)</td></tr><tr><td>--color-on-dark-muted</td><td>paper 72 percent over ink</td><td>#bcbfc4</td><td>Secondary text on the dark band</td></tr><tr><td>--color-success-tint, warning-tint, danger-tint</td><td>signal at 12, 16, 10 percent</td><td>#e1f4e9, #fef0d8, #fbebea</td><td>Notices and badges</td></tr><tr><td>--color-danger-hover, danger-active</td><td>danger with 22 and 44 percent black</td><td>#a82926, #781d1b</td><td>Destructive button</td></tr></tbody></table></div>
+<h2 id="3-typography">3. Typography</h2>
+<p>Inter Variable, self-hosted (the website policy allows only its own files). Weights 400, 500, 600.</p>
+<div class="table-wrap"><table class="table"><thead><tr><th>Role</th><th>Size (390 / 768 / 1440 px)</th><th>Line height</th><th>Tracking</th><th>Weight</th></tr></thead><tbody><tr><td>h1</td><td>40.5 / 52.6 / 64 px, clamp(2.5rem, 1.75rem + 3.2vw, 4rem)</td><td>1.08</td><td>-0.02em</td><td>600</td></tr><tr><td>h2</td><td>32 / 39.4 / 44 px, clamp(2rem, 1.5rem + 2vw, 2.75rem)</td><td>1.12</td><td>-0.02em</td><td>600</td></tr><tr><td>h3</td><td>24 px</td><td>1.25</td><td>-0.01em</td><td>600</td></tr><tr><td>Lead</td><td>20 px</td><td>1.45</td><td>0</td><td>400</td></tr><tr><td>Body</td><td>16 px</td><td>1.5</td><td>0</td><td>400</td></tr><tr><td>UI (menu, labels, table)</td><td>14 px</td><td>1.4</td><td>0</td><td>500</td></tr><tr><td>Button</td><td>15 px</td><td>1</td><td>0</td><td>600</td></tr><tr><td>Caption</td><td>12 px</td><td>1.4</td><td>0</td><td>400</td></tr><tr><td>Eyebrow</td><td>12 px uppercase</td><td>1.4</td><td>+0.08em</td><td>600</td></tr></tbody></table></div>
+<p>Paragraphs stop at 65 characters.</p>
+<h2 id="4-space-layout-shape-elevation-motion">4. Space, layout, shape, elevation, motion</h2>
+<ul><li>Space: 4 px base, 4, 8, 12, 16, 24, 32, 48, 64, 96 px.</li><li>Layout: container 1240 px, gutter clamp(1rem, 4vw, 2rem), section padding clamp(3rem, 2rem + 4vw, 5rem). Breakpoints 480, 768, 1024, 1280 px.</li><li>Radius: 8 px (controls), 14 px (cards, panels, dialogs), pill (badges).</li><li>Elevation: level 1 cards, level 2 hover and menus, level 3 sticky header, level 4 dialogs, plus an inner pressed shadow.</li><li>Motion: 100, 200, 300, 500 ms; standard and emphasized curves; reduced motion drops transitions to 0.01 ms and removes lifts.</li></ul>
+<h2 id="5-components-and-states">5. Components and states</h2>
+<div class="table-wrap"><table class="table"><thead><tr><th>Component</th><th>States</th></tr></thead><tbody><tr><td>Primary button</td><td>Hover: 22 percent darker, lifts 1 px, shadow level 2. Pressed: 44 percent darker, sinks 1 px, inner shadow. Focus: 2 px ring, offset 2 px. Disabled: 38 percent opacity. Loading: spinner</td></tr><tr><td>Secondary and ghost buttons</td><td>Hover: tint 10 percent, darker text and border. Pressed: tint 24 percent, sinks 1 px</td></tr><tr><td>Destructive button</td><td>Error signal fill, same hover and pressed steps</td></tr><tr><td>Inverse button (dark band)</td><td>White fill; hover tint, pressed tint strong</td></tr><tr><td>Field</td><td>44 px, 16 px text, border muted (6.32:1), visible label, "(required)" in text, error with danger border, icon and sentence</td></tr><tr><td>Badge, notice</td><td>Tint background, dark text, signal dot or border, icon</td></tr><tr><td>Category tag, calendar event</td><td>Category dot or 4 px edge, 12 percent tint, ink text</td></tr><tr><td>Tabs, accordion, card, table, empty state, legend</td><td>Defined in the CSS with hover and selected states</td></tr></tbody></table></div>
+<h2 id="6-charts">6. Charts</h2>
+<div class="table-wrap"><table class="table"><thead><tr><th>Series</th><th>Color</th><th>Form</th></tr></thead><tbody><tr><td>Main measure (Current, Received)</td><td>primary</td><td>Bars or solid line</td></tr><tr><td>Outcome (Completed)</td><td>success signal</td><td>Bars or 3 px line</td></tr><tr><td>Waiting</td><td>warning signal</td><td>Bars with legend only</td></tr><tr><td>Overdue, failed</td><td>error signal</td><td>Bars or line</td></tr><tr><td>Reference (Average call duration, target)</td><td>muted</td><td>2.5 px dashed line with dot markers</td></tr><tr><td>Second measure of the same kind</td><td>secondary</td><td>Bars with legend only</td></tr><tr><td>Appointment purposes</td><td>category colors</td><td>Bars, dots, event edges</td></tr></tbody></table></div>
+<p>Legend markers are 14 px (22 px dashes for lines) with 14 px labels; the current app uses 11 px markers and 9 to 10 px labels.</p>
+<h2 id="7-migration-map-main-items">7. Migration map (main items)</h2>
+<div class="table-wrap"><table class="table"><thead><tr><th>Item</th><th>Today</th><th>Proposed</th></tr></thead><tbody><tr><td>Color variables</td><td>30 on the website, six blues across site and app</td><td>6 base, 3 semantic pairs, 5 categories, the rest calculated</td></tr><tr><td>Font</td><td>System font on the website, Inter Variable in the app</td><td>Inter Variable on both</td></tr><tr><td>Font sizes and weights</td><td>20 sizes, 8 weights on the website</td><td>9 roles, 3 weights</td></tr><tr><td>Smallest text</td><td>8 to 10 px</td><td>12 px</td></tr><tr><td>Touch targets</td><td>21 to 36 px in menus and links</td><td>44 px</td></tr><tr><td>Radii</td><td>9 values</td><td>3 values</td></tr><tr><td>Button states</td><td>Hover only on some controls, no pressed state</td><td>All states on every control</td></tr><tr><td>Semantic colors</td><td>Dark tones on pale backgrounds</td><td>Traffic-light signals with dark text and tints</td></tr><tr><td>Category colors</td><td>Collided with primary and error</td><td>Five clear hues</td></tr><tr><td>Page background</td><td>#fafafa in the app, mixed tints on the website</td><td>#fafafa with white surfaces everywhere</td></tr></tbody></table></div>
+<h2 id="8-decisions-log">8. Decisions log</h2>
+<ol><li>Palette: three routes were compared against a scan of competitors' colors (blue dominant; violet for AI-forward brands; orange, red and green each used by one competitor). Route A, blue and sun, was chosen: one blue for logo and actions, a warm yellow no direct competitor uses as an accent.</li><li>One gray, #536173, for secondary text and borders (owner's choice).</li><li>Semantic colors rebuilt from traffic lights after the first version read as neon green and dark ochre (owner's direction).</li><li>Button states strengthened after review: steps of about 0.085 in lightness plus position changes.</li><li>Background #fafafa with white surfaces, as in the current app, after testing #e5e7eb and #eff6ff.</li><li>Category colors: Tour and Billing at the signal lightness; Lease, Inspection and Maintenance deeper (owner's choice), minimum separation 0.121.</li><li>Charts: Completed uses the success signal for consistency with the success badge; averages are a dashed gray line.</li></ol>
+<h2 id="9-open-decisions">9. Open decisions</h2>
+<ul><li>Logo color: route A moves the logo blue from #0878f9 to #0b63ce. This is the client's decision; logo files were not changed.</li><li>Confirm how the 12 appointment purposes map to the 5 categories.</li><li>Dark mode, an icon set and a full data palette are not included.</li><li>color-mix() is supported by current browsers; for older ones replace calculated tokens with their results.</li><li>Validate type and line breaks on the real pages with Inter loaded.</li></ul>
+</main>
+<footer class="docfoot caption">Mobve frontend audit and design system · 2026-11-03 · Source: docs/src/05-design-system.md</footer>
+</body>
+</html>

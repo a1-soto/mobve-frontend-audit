@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Mobve app flow: staff workspace (staging)</title>
+<style>
+body { margin: 0; font-family: Arial, Helvetica, sans-serif; color: #101b2b; background: #ffffff; }
+header { padding: 24px 32px 8px; }
+h1 { margin: 0 0 6px; font-size: 26px; }
+p { margin: 0 0 12px; color: #536173; font-size: 14px; }
+.legend { display: flex; flex-wrap: wrap; gap: 8px 20px; font-size: 13px; }
+.legend span { display: inline-flex; align-items: center; gap: 6px; }
+.legend i { width: 14px; height: 14px; border-radius: 3px; display: inline-block; }
+main { padding: 8px 32px 32px; }
+.mermaid svg { max-width: 100% !important; height: auto; }
+@page { size: 594mm 420mm; margin: 10mm; }
+@media print { html { -webkit-print-color-adjust: exact; print-color-adjust: exact; } }
+</style>
+</head>
+<body>
+<header>
+<h1>Mobve app flow: staff workspace (staging)</h1>
+<p>Audit of 2026-11-03. Role tested: Owner.</p>
+<div class="legend"><span><i style="background:#B3E65F;border:1px solid #6E9A24"></i>Entry point</span><span><i style="background:#FFE86D;border:1px solid #A28E26"></i>Screen (works)</span><span><i style="background:#9CE6FF;border:1px solid #2C97BB"></i>Panel, dialog or menu</span><span><i style="background:#FFB575;border:1px solid #CC7830"></i>Problem found</span><span><i style="background:#DDDDD8;border:1px solid #8A8A7E"></i>Not tested (changes data or ends session)</span></div>
+</header>
+<main><pre class="mermaid">
+flowchart LR
+    classDef start fill:#B3E65F,stroke:#6E9A24,color:#2F440B
+    classDef ok fill:#FFE86D,stroke:#A28E26,color:#574900
+    classDef ui fill:#9CE6FF,stroke:#2C97BB,color:#1C4657
+    classDef bad fill:#FFB575,stroke:#CC7830,color:#542700
+    classDef ext fill:#DDDDD8,stroke:#8A8A7E,color:#434339
+    classDef skip fill:#DDDDD8,stroke:#8A8A7E,color:#434339
+    web([&quot;Public site: Log in, Sign up, plan buttons&quot;]):::start
+    login[&quot;/login: email and password&quot;]:::ok
+    reg[&quot;/register and /register?plan=&quot;]:::skip
+    forgot[&quot;/forgot-password, /terms, /privacy, /dmca&quot;]:::skip
+    legal[&quot;Blank screen: Checking legal acceptance on full page loads&quot;]:::bad
+    protect[&quot;Any app URL without a session: 307 to /login&quot;]:::ok
+    web --&gt; login
+    web --&gt; reg
+    login --&gt; forgot
+    login --&gt; legal
+    protect --&gt; login
+    dash[&quot;/dashboard: filters, 6 KPIs, maintenance performance, charts, recent calls&quot;]:::ok
+    shell[&quot;Shell: sidebar, header, mobile drawer&quot;]:::ui
+    legal --&gt; shell
+    legal --&gt; dash
+    shell --&gt; dash
+    shell --&gt; maint[&quot;/maintenance&quot;]:::ok
+    shell --&gt; appt[&quot;/appointments&quot;]:::ok
+    shell --&gt; calls[&quot;/calls: Call Log&quot;]:::ok
+    shell --&gt; sett[&quot;/settings: 19 pages&quot;]:::ok
+    shell --&gt; logout[&quot;Logout&quot;]:::skip
+    shell --&gt; props[&quot;Header: property and building selectors&quot;]:::ui
+    shell --&gt; emma[&quot;Header: Emma AI, Call answering dialog&quot;]:::ui
+    shell --&gt; umenu[&quot;User menu: Profile, Notifications, Security, All settings, Sign out&quot;]:::ui
+    emma --&gt; emmaform[&quot;Answering mode, staffed phone, ring seconds, Save&quot;]:::skip
+    umenu --&gt; sett
+    dash --&gt; kpi[&quot;KPI cards and day bars link to filtered Maintenance, also when the value is 0&quot;]:::bad
+    kpi --&gt; maint
+    dash --&gt; viewall[&quot;Recent Calls: View all&quot;]:::ok
+    viewall --&gt; calls
+    maint --&gt; mviews[&quot;List, Board, Group by category, filters, Export CSV&quot;]:::ok
+    mviews --&gt; mdetail[&quot;Request detail: description, contact and access, visits, parts, history&quot;]:::ok
+    mdetail --&gt; mstatus[&quot;Save status update&quot;]:::skip
+    mdetail --&gt; maint
+    appt --&gt; aover[&quot;Overview: scorecards, schedule day, week, month&quot;]:::ok
+    appt --&gt; apipe[&quot;Pipeline board: New to Won&quot;]:::bad
+    appt --&gt; aadd[&quot;Add appointment dialog&quot;]:::ui
+    aadd --&gt; asave[&quot;Add to calendar&quot;]:::skip
+    aover --&gt; areview[&quot;Attention required: Review prospect&quot;]:::ok
+    apipe --&gt; aclip[&quot;Heading and Add appointment button clipped past 1440 px&quot;]:::bad
+    calls --&gt; cempty[&quot;Filters and empty state: No calls match&quot;]:::ok
+    sett --&gt; sper[&quot;Personal: Profile, Notifications, Security and sessions&quot;]:::ok
+    sett --&gt; scomp[&quot;Company: Operational setup 17 percent, Company profile, Properties, Team and access, Workspace pages&quot;]:::ok
+    sett --&gt; sops[&quot;Operations: Hours, Maintenance, Leasing&quot;]:::ok
+    sett --&gt; sinv[&quot;Operations: Inventory, link Open inventory workspace&quot;]:::ok
+    sinv --&gt; minv[&quot;/maintenance/inventory: no sidebar entry&quot;]:::bad
+    sett --&gt; shous[&quot;Operations: Resident requests&quot;]:::bad
+    sett --&gt; sai[&quot;AI: Voice assistant, Knowledge&quot;]:::ok
+    sett --&gt; sphone[&quot;Phone numbers and routing: unavailable until provider verification&quot;]:::ok
+    sett --&gt; sdata[&quot;Data: Privacy and retention, Audit log&quot;]:::ok
+    sett --&gt; sacc[&quot;Account: Plan and usage&quot;]:::ok
+    shous --&gt; herr[&quot;Error: This information could not be loaded. Try again makes no request&quot;]:::bad
+</pre></main>
+<script src="https://cdn.jsdelivr.net/npm/mermaid@10.9.1/dist/mermaid.min.js"></script>
+<script>mermaid.initialize({ startOnLoad: true, securityLevel: "strict", flowchart: { useMaxWidth: true, htmlLabels: true } });</script>
+</body>
+</html>

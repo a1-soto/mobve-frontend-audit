@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>App click test: every control and where it leads | Mobve audit</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&amp;display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../design-system/mobve-design-system.css">
+<style>
+:root { --font-sans: "Inter", "Inter Variable", system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif; color-scheme: light; }
+body { background: var(--color-bg); }
+.docnav { display: flex; flex-wrap: wrap; gap: var(--space-1); padding: var(--space-3) var(--gutter); background: var(--color-paper); border-bottom: 1px solid var(--color-divider); }
+.docnav a { display: inline-flex; align-items: center; min-height: 36px; padding: 0 var(--space-3); border-radius: var(--radius-sm); color: var(--color-muted); font-size: var(--fs-ui); font-weight: var(--fw-medium); text-decoration: none; }
+.docnav a:hover { background: var(--color-tint); color: var(--color-primary); }
+.docnav a[aria-current="page"] { background: var(--color-tint); color: var(--color-primary); }
+.doc { max-width: 900px; margin: var(--space-6) auto var(--space-9); padding: var(--space-7) var(--space-6); background: var(--color-paper); border: 1px solid var(--color-divider); border-radius: var(--radius-md); display: grid; gap: var(--space-4); }
+.doc h1 { font-size: clamp(2rem, 1.5rem + 2vw, 2.75rem); line-height: 1.12; }
+.doc h2 { font-size: var(--fs-h3); line-height: var(--lh-h3); letter-spacing: var(--ls-h3); margin-top: var(--space-5); padding-top: var(--space-4); border-top: 1px solid var(--color-divider); }
+.doc h3 { font-size: 1.125rem; line-height: 1.35; letter-spacing: 0; margin-top: var(--space-3); }
+.doc p, .doc li { max-width: 75ch; }
+.doc ul, .doc ol { margin: 0; padding-left: 1.4rem; display: grid; gap: var(--space-2); }
+.doc code { font-size: 0.85em; background: var(--color-bg); border: 1px solid var(--color-divider); padding: 0 5px; border-radius: 5px; overflow-wrap: anywhere; }
+.table-wrap { overflow-x: auto; border: 1px solid var(--color-divider); border-radius: var(--radius-sm); }
+.doc .table th, .doc .table td { vertical-align: top; }
+.docfoot { max-width: 900px; margin: 0 auto var(--space-7); padding: 0 var(--space-6); }
+@page { size: A4; margin: 16mm 14mm; }
+@media print {
+  body { background: #fff; }
+  .docnav, .docfoot { display: none; }
+  .doc { margin: 0; padding: 0; border: 0; max-width: none; }
+  .doc h2 { break-after: avoid; }
+  .doc h3 { break-after: avoid; }
+  .table-wrap { overflow: visible; border: 0; }
+  .doc .table { font-size: 11px; }
+  .doc .table tr { break-inside: avoid; }
+  a { color: var(--color-ink); }
+}
+</style>
+</head>
+<body>
+<nav class="docnav" aria-label="Documents"><a href="00-summary.html">Summary</a><a href="01-website-audit.html">Website audit</a><a href="02-indexing.html">Indexing</a><a href="03-app-audit.html">App audit</a><a href="04-app-click-test.html" aria-current="page">App click test</a><a href="05-design-system.html">Design system</a><a href="06-prototypes.html">Prototypes</a></nav>
+<main class="doc">
+<h1 id="app-click-test-every-control-and-where-it-leads">App click test: every control and where it leads</h1>
+<p>Date: 2026-11-03. Staging app, role Owner. Every button, tab, menu item, disclosure and link on each screen was inspected. Controls that only filter, navigate, open or close were clicked; links were requested to check their destination. Controls that write, send, download or end the session were listed and not clicked. Filters were restored afterwards. No script errors were raised.</p>
+<h2 id="1-results-by-screen">1. Results by screen</h2>
+<div class="table-wrap"><table class="table"><thead><tr><th>Screen</th><th>Result</th></tr></thead><tbody><tr><td>Shell</td><td>Sidebar links go to their routes; property selector filters scope and buildings and was restored; building selector, Emma AI dialog and user menu open and close with Escape; mobile drawer works</td></tr><tr><td>Dashboard</td><td>Refresh, Delta, Reset filters, 8 info panels and Total or Average work; KPI cards and day bars link to filtered Maintenance (200); View all goes to Call Log</td></tr><tr><td>Maintenance</td><td>Summary cards, 8 stage filters, Reset, List, Board and Group by category work; pagination disabled with 7 results; View request opens the detail, Back returns</td></tr><tr><td>Appointments</td><td>Add appointment dialog opens and closes; Overview and Pipeline switch; week, day and month navigation moves the range; Review prospect and prospect cards open</td></tr><tr><td>Call Log</td><td>Refresh and Reset filters show no change (empty list, default filters)</td></tr><tr><td>Settings</td><td>19 pages open; 5 Fix links and Open inventory workspace answer 200; Preview impact works; Properties: first row expanded, other rows and Manage showed no measurable change</td></tr></tbody></table></div>
+<h2 id="2-problems-found">2. Problems found</h2>
+<ol><li>Resident requests cannot load and Try again does nothing.</li><li>Save buttons are enabled with nothing changed on nine pages (Company profile, Profile, Maintenance, Hours and coverage, Inventory, Leasing and appointments, Notifications, Privacy and retention, Voice assistant), while Save role, Save call answering and phone routing stay disabled until a change.</li><li>Refresh data on Maintenance, Appointments and Call Log gives no visible confirmation.</li><li>Dashboard day bars link to Maintenance even when the value is 0.</li><li>Dashboard links with query parameters reload the whole page.</li><li>The Inventory screen is reachable only from a Settings link.</li><li>"How these metrics work" shows no effect.</li><li>The Call Log did not request new data after changing the property (check with populated data).</li></ol>
+<h2 id="3-not-clicked-on-purpose">3. Not clicked on purpose</h2>
+<p>Log out and Sign out; Export CSV and Download acceptance receipt; every Save; Send code and Send test page (5); Upload document; Remove, Invite member, Create department, Create draft policy, Run draft checks, Log verified-intake request, Add closure, Add target, Add 14-day coverage, Add to calendar; about 30 switches, checkboxes and radio buttons.</p>
+<p>Test these with a disposable account or approved test data, and confirm what each one triggers (messages, calls, billing, audit entries).</p>
+</main>
+<footer class="docfoot caption">Mobve frontend audit and design system · 2026-11-03 · Source: docs/src/04-app-click-test.md</footer>
+</body>
+</html>

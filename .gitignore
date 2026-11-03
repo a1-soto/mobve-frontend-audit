@@ -1,0 +1,11 @@
+.claude/
+.remember/
+.DS_Store
+__pycache__/
+
+# Working files kept out of the shared repository
+audit/
+scripts/
+design-system/src/
+design-system/palette-routes.html
+docs/pdf/palette-routes.pdf

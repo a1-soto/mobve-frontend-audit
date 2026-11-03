@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>App audit: staff workspace | Mobve audit</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&amp;display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../design-system/mobve-design-system.css">
+<style>
+:root { --font-sans: "Inter", "Inter Variable", system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif; color-scheme: light; }
+body { background: var(--color-bg); }
+.docnav { display: flex; flex-wrap: wrap; gap: var(--space-1); padding: var(--space-3) var(--gutter); background: var(--color-paper); border-bottom: 1px solid var(--color-divider); }
+.docnav a { display: inline-flex; align-items: center; min-height: 36px; padding: 0 var(--space-3); border-radius: var(--radius-sm); color: var(--color-muted); font-size: var(--fs-ui); font-weight: var(--fw-medium); text-decoration: none; }
+.docnav a:hover { background: var(--color-tint); color: var(--color-primary); }
+.docnav a[aria-current="page"] { background: var(--color-tint); color: var(--color-primary); }
+.doc { max-width: 900px; margin: var(--space-6) auto var(--space-9); padding: var(--space-7) var(--space-6); background: var(--color-paper); border: 1px solid var(--color-divider); border-radius: var(--radius-md); display: grid; gap: var(--space-4); }
+.doc h1 { font-size: clamp(2rem, 1.5rem + 2vw, 2.75rem); line-height: 1.12; }
+.doc h2 { font-size: var(--fs-h3); line-height: var(--lh-h3); letter-spacing: var(--ls-h3); margin-top: var(--space-5); padding-top: var(--space-4); border-top: 1px solid var(--color-divider); }
+.doc h3 { font-size: 1.125rem; line-height: 1.35; letter-spacing: 0; margin-top: var(--space-3); }
+.doc p, .doc li { max-width: 75ch; }
+.doc ul, .doc ol { margin: 0; padding-left: 1.4rem; display: grid; gap: var(--space-2); }
+.doc code { font-size: 0.85em; background: var(--color-bg); border: 1px solid var(--color-divider); padding: 0 5px; border-radius: 5px; overflow-wrap: anywhere; }
+.table-wrap { overflow-x: auto; border: 1px solid var(--color-divider); border-radius: var(--radius-sm); }
+.doc .table th, .doc .table td { vertical-align: top; }
+.docfoot { max-width: 900px; margin: 0 auto var(--space-7); padding: 0 var(--space-6); }
+@page { size: A4; margin: 16mm 14mm; }
+@media print {
+  body { background: #fff; }
+  .docnav, .docfoot { display: none; }
+  .doc { margin: 0; padding: 0; border: 0; max-width: none; }
+  .doc h2 { break-after: avoid; }
+  .doc h3 { break-after: avoid; }
+  .table-wrap { overflow: visible; border: 0; }
+  .doc .table { font-size: 11px; }
+  .doc .table tr { break-inside: avoid; }
+  a { color: var(--color-ink); }
+}
+</style>
+</head>
+<body>
+<nav class="docnav" aria-label="Documents"><a href="00-summary.html">Summary</a><a href="01-website-audit.html">Website audit</a><a href="02-indexing.html">Indexing</a><a href="03-app-audit.html" aria-current="page">App audit</a><a href="04-app-click-test.html">App click test</a><a href="05-design-system.html">Design system</a><a href="06-prototypes.html">Prototypes</a></nav>
+<main class="doc">
+<h1 id="app-audit-staff-workspace">App audit: staff workspace</h1>
+<p>Date: 2026-11-03. Scope: the logged-in staff workspace on the staging host, role Owner, account Jackson Properties LLC. Method: read-only. Nothing was saved, sent, exported or deleted, and Log out was not used.</p>
+<h2 id="1-summary">1. Summary</h2>
+<p>The app is more mature than the public site: fast (LCP 0.74 s, CLS 0.018, TTFB 134 ms), strong security headers, an accessible mobile drawer, labeled forms and table regions, semantic status tokens and a loaded brand font. Three real defects (items 1, 2 and 3 in section 4) and polish items remain.</p>
+<h2 id="2-app-map">2. App map</h2>
+<ul><li>Entry: public site, then /login. Any app URL without a session answers 307 to /login.</li><li>Shell: sidebar (Dashboard, Maintenance Requests, Appointments, Call Log, Settings, Logout), header (company, property and building selectors, Emma AI, user menu), drawer on narrow screens.</li><li>Dashboard: filters, 6 KPI cards, maintenance performance cards, charts, recent calls, Attention Required.</li><li>Maintenance Requests: summary, pipeline by stage, filters, List, Board and Group by category views, Export CSV, detail page per request.</li><li>Appointments: Overview (scorecards, Day, Week and Month schedule) and Pipeline (New to Won), Add appointment dialog, Attention required, Needs a time.</li><li>Call Log: filters and empty state.</li><li>Settings: overview with a setup checklist (17 percent) and 19 pages in six groups.</li><li>Flow diagram: Miro board <a href="https://miro.com/app/board/uXjVESDiKo0=/">https://miro.com/app/board/uXjVESDiKo0=/</a></li></ul>
+<h2 id="3-what-works">3. What works</h2>
+<ul><li>All 5 main routes and 19 Settings routes visited; 18 of 19 Settings pages load; no link leads nowhere.</li><li>All /api calls observed answered 200 (the only 503 was the page request of Resident requests). No console errors.</li><li>Clear breadcrumb, title and description on every screen; useful empty states; honest labels ("Collecting data", "Not connected").</li><li>Dialogs and menus open with focus inside, close with Escape and return focus.</li><li>Landmarks, skip link, aria-current, one h1 per page, labeled fields, wide tables in a labeled focusable scroll region.</li><li>Contrast: of 196 text elements on the Dashboard, only the "—" placeholders fail (#a3a3a3 on white, 2.5:1).</li><li>Responsive at 500 px: no horizontal overflow on Dashboard, Maintenance and Appointments; accessible drawer.</li><li>Performance: TTFB 134 ms, FCP 236 ms, LCP 736 ms, CLS 0.018, 35 KB transferred, slowest API call 581 ms.</li><li>Security headers: CSP with nonce and strict-dynamic, HSTS with preload, X-Frame-Options DENY, nosniff, COOP and CORP, no-store for private pages, 301 from http.</li><li>Design tokens (18) including semantic status colors and a 44 px touch target; Inter Variable loaded.</li></ul>
+<h2 id="4-what-needs-fixing">4. What needs fixing</h2>
+<h3 id="defects">Defects</h3>
+<ol><li>Settings, Resident requests shows "This information could not be loaded". The page request returned 503, and Try again sends no new request.</li><li>Appointments, Pipeline at 1440 px: heading, Add appointment and "Updated" extend to 1612 px; the button (1329 to 1477 px) is partly off screen and the page does not scroll horizontally.</li><li>Every page has the same browser title "Mobve | Staff workspace", and all 19 Settings pages use the h1 "Settings".</li><li>Text size: most content is 11 to 12 px, labels 10 px, 9 px measured at 500 px.</li><li>Touch targets: about 20 elements per page under 44 px although a 44 px token exists.</li></ol>
+<h3 id="ux-and-polish">UX and polish</h3>
+<ol start="6"><li>Full page loads show a blank "Checking legal acceptance..." screen (seen on Appointments; the legal-acceptance call runs on every load).</li><li>Hover: sidebar background changes to #f5f7f9 only; Delta, Reset filters and Emma AI show no change; no pressed state.</li><li>Required fields in Add appointment are not marked.</li><li>Empty KPI dashes in #a3a3a3 (2.5:1).</li><li>The request detail h1 is the internal code (CALL-0A8DB8A5).</li><li>Phone numbers are unformatted.</li><li>The week calendar header is wider than a 500 px screen.</li><li>call-answering is requested on every page change (about 20 times in the walk).</li><li>Dashboard and Maintenance show different date ranges without saying so.</li></ol>
+<h3 id="expected-in-staging">Expected in staging</h3>
+<p>Phone numbers and routing unavailable until provider verification; setup checklist at 17 percent; no usage events; empty call scorecards.</p>
+<h2 id="5-scope">5. Scope</h2>
+<ul><li>Seen: the rendered app, computed styles, network calls and headers, at 500 px and 1440 px, role Owner, one account with mostly empty data.</li><li>Not seen: the app source code and bundles, the backend, other roles and accounts, populated data. No security code audit of the app.</li><li>Not verified: actions that write data, Lighthouse for the app (the automated tool runs without the session), keyboard-only and screen reader runs.</li></ul>
+<h2 id="6-corrections-made-during-the-audit">6. Corrections made during the audit</h2>
+<ul><li>A first check suggested unnamed controls on Team and access; the check was wrong.</li><li>A request detail error came from a truncated test URL; the real link works.</li></ul>
+</main>
+<footer class="docfoot caption">Mobve frontend audit and design system · 2026-11-03 · Source: docs/src/03-app-audit.md</footer>
+</body>
+</html>

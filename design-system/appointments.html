@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Mobve Appointments Prototype</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&amp;display=swap" rel="stylesheet">
+<link rel="stylesheet" href="mobve-design-system.css">
+<style>
+/* Layout idea: the staff app's Appointments overview, same structure as the current screen, rebuilt with the system's tokens. */
+:root { --font-sans: "Inter", "Inter Variable", system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif; color-scheme: light; --hour: 96px; }
+body { background: var(--color-bg); }
+.app { display: grid; grid-template-columns: 232px minmax(0, 1fr); min-height: 100vh; }
+@media (max-width: 960px) { .app { grid-template-columns: minmax(0, 1fr); } .side { display: none; } }
+.side { display: flex; flex-direction: column; gap: var(--space-1); padding: var(--space-5) var(--space-3); background: var(--color-paper); border-right: 1px solid var(--color-divider); position: sticky; top: 0; height: 100vh; box-sizing: border-box; }
+.wordmark { padding: 0 var(--space-3) var(--space-5); font-size: 1.25rem; font-weight: var(--fw-semibold); letter-spacing: -0.02em; color: var(--color-ink); text-decoration: none; }
+.side-link { display: flex; align-items: center; gap: var(--space-3); min-height: var(--control-h); padding: 0 var(--space-3); border-radius: var(--radius-sm); color: var(--color-ink); text-decoration: none; font-size: var(--fs-ui); font-weight: var(--fw-medium); transition: background-color var(--dur-fast) var(--ease-standard); }
+.side-link:hover { background: var(--color-tint); color: var(--color-ink); }
+.side-link[aria-current="page"] { background: var(--color-tint); color: var(--color-primary); }
+.side-link svg { width: 18px; height: 18px; flex: none; }
+.side-bottom { margin-top: auto; display: grid; gap: var(--space-2); }
+.main { min-width: 0; display: grid; align-content: start; }
+.top { display: flex; align-items: center; justify-content: space-between; gap: var(--space-4); min-height: 64px; padding: 0 var(--space-6); background: var(--color-paper); border-bottom: 1px solid var(--color-divider); position: sticky; top: 0; z-index: 5; }
+.top .company { font-weight: var(--fw-semibold); color: var(--color-primary); }
+.top .tools { display: flex; align-items: center; gap: var(--space-3); flex-wrap: wrap; }
+.top .select { width: auto; min-width: 150px; }
+.avatar { display: inline-grid; place-items: center; width: 36px; height: 36px; border-radius: 50%; background: var(--color-secondary); color: var(--color-ink); font-size: var(--fs-caption); font-weight: var(--fw-semibold); }
+.body { display: grid; gap: var(--space-5); padding: var(--space-6); }
+.crumb { font-size: var(--fs-caption); color: var(--color-muted); }
+.page-head { display: flex; flex-wrap: wrap; align-items: end; justify-content: space-between; gap: var(--space-4); }
+.page-head h1 { font-size: var(--fs-h3); line-height: var(--lh-h3); letter-spacing: var(--ls-h3); }
+.filters { display: grid; gap: var(--space-4); grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); align-items: end; }
+.filters .field { max-width: none; }
+.scores { display: grid; gap: var(--space-4); grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); }
+.score { display: grid; gap: var(--space-1); align-content: start; }
+.score b { font-size: 1.75rem; line-height: 1.15; font-weight: var(--fw-semibold); font-variant-numeric: tabular-nums; }
+.layout { display: grid; gap: var(--space-5); grid-template-columns: minmax(0, 1fr) 300px; align-items: start; }
+@media (max-width: 1500px) { .layout { grid-template-columns: minmax(0, 1fr); } .layout > .side-panels { grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); } }
+.sched-head { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: var(--space-3); }
+.nav-group { display: flex; align-items: center; gap: var(--space-2); }
+.nav-group h2 { font-size: var(--fs-body); line-height: var(--lh-body); letter-spacing: 0; font-weight: var(--fw-semibold); margin-left: var(--space-2); }
+.icon-btn { width: var(--control-h); padding: 0; }
+.icon-btn svg { width: 18px; height: 18px; }
+.seg { display: inline-flex; padding: 3px; gap: 2px; border-radius: var(--radius-sm); background: var(--color-bg); border: 1px solid var(--color-divider); }
+.seg button { min-height: 38px; padding: 0 var(--space-4); border: 0; border-radius: 6px; background: none; color: var(--color-muted); font: inherit; font-size: var(--fs-ui); font-weight: var(--fw-medium); cursor: pointer; transition: background-color var(--dur-fast) var(--ease-standard), color var(--dur-fast) var(--ease-standard); }
+.seg button:hover { color: var(--color-ink); background: var(--color-paper); }
+.seg button[aria-pressed="true"] { background: var(--color-primary); color: var(--color-paper); }
+.legend-cats { display: flex; flex-wrap: wrap; gap: var(--space-2); }
+.cal-wrap { overflow-x: auto; border: 1px solid var(--color-divider); border-radius: var(--radius-md); background: var(--color-paper); }
+.cal { display: grid; grid-template-columns: 56px repeat(7, minmax(96px, 1fr)); min-width: 730px; }
+.cal-h { position: sticky; top: 0; display: grid; justify-items: center; gap: 2px; padding: var(--space-3) var(--space-2); border-bottom: 1px solid var(--color-divider); background: var(--color-paper); }
+.cal-h span { font-size: var(--fs-caption); font-weight: var(--fw-semibold); letter-spacing: var(--ls-eyebrow); color: var(--color-muted); }
+.cal-h b { display: inline-grid; place-items: center; width: 32px; height: 32px; border-radius: 50%; font-size: var(--fs-ui); font-weight: var(--fw-semibold); }
+.cal-h.is-today b { background: var(--color-primary); color: var(--color-paper); }
+.cal-h.is-today span { color: var(--color-primary); }
+.times { position: relative; height: calc(var(--hour) * 10); }
+.times span { position: absolute; right: var(--space-2); transform: translateY(-50%); font-size: var(--fs-caption); color: var(--color-muted); font-variant-numeric: tabular-nums; }
+.day { position: relative; height: calc(var(--hour) * 10); border-left: 1px solid var(--color-divider); background-image: repeating-linear-gradient(to bottom, var(--color-divider) 0 1px, transparent 1px var(--hour)); }
+.day.is-today { background-color: color-mix(in srgb, var(--color-primary) 4%, var(--color-paper)); }
+.day .event { position: absolute; left: 4px; right: 4px; overflow: hidden; box-sizing: border-box; padding: 4px var(--space-2); cursor: pointer; transition: box-shadow var(--dur-fast) var(--ease-standard), transform var(--dur-fast) var(--ease-standard); }
+.day .event:hover { box-shadow: var(--shadow-2); transform: translateY(-1px); }
+.day .event:focus-visible { outline-offset: 1px; }
+.day .event b { font-size: var(--fs-caption); line-height: 1.3; display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 2; overflow: hidden; overflow-wrap: anywhere; }
+.day .event span { font-size: var(--fs-caption); color: var(--color-muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.now { position: absolute; left: 0; right: 0; height: 2px; background: var(--color-danger); z-index: 2; }
+.now::before { content: ""; position: absolute; left: -5px; top: -4px; width: 10px; height: 10px; border-radius: 50%; background: var(--color-danger); }
+.panel { display: grid; gap: var(--space-4); align-content: start; }
+.panel h3 { font-size: var(--fs-body); line-height: var(--lh-body); letter-spacing: 0; }
+.person { display: grid; gap: var(--space-2); padding: var(--space-4); border: 1px solid var(--color-divider); border-radius: var(--radius-sm); }
+.person-top { display: flex; justify-content: space-between; align-items: center; gap: var(--space-2); }
+.list-wrap { overflow-x: auto; border: 1px solid var(--color-divider); border-radius: var(--radius-md); background: var(--color-paper); }
+.list-wrap .table { min-width: 760px; }
+.detail { display: none; }
+.detail.is-open { display: grid; }
+@media print { @page { size: 381mm 268mm; margin: 0; } html { -webkit-print-color-adjust: exact; print-color-adjust: exact; } }
+@media print { .side, .top { position: static; height: auto; } }
+@media print { .app { display: flex; align-items: flex-start; } .app > .side { width: 232px; flex: none; } .app > .main { flex: 1; min-width: 0; } }
+@media print { .app > .side { display: flex !important; } }
+@media print { .card { break-inside: avoid; } }
+</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
+<symbol id="i-home" viewBox="0 0 20 20"><path d="M3 9l7-6 7 6v8H3z" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/></symbol>
+<symbol id="i-wrench" viewBox="0 0 20 20"><path d="M12.5 3a4 4 0 00-3.8 5.3L3 14l3 3 5.7-5.7A4 4 0 0017 7.5l-2.4 2.4-2.5-2.5L14.5 5A4 4 0 0012.5 3z" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/></symbol>
+<symbol id="i-cal" viewBox="0 0 20 20"><rect x="3" y="4.5" width="14" height="12.5" rx="2" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M3 8.5h14M7 3v3M13 3v3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></symbol>
+<symbol id="i-phone" viewBox="0 0 20 20"><path d="M5 3h3l1.5 4-2 1.3a9 9 0 004.2 4.2L13 10.5l4 1.5v3a2 2 0 01-2 2A12 12 0 013 5a2 2 0 012-2z" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/></symbol>
+<symbol id="i-gear" viewBox="0 0 20 20"><circle cx="10" cy="10" r="2.6" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M10 2.5v2M10 15.5v2M2.5 10h2M15.5 10h2M4.7 4.7l1.4 1.4M13.9 13.9l1.4 1.4M4.7 15.3l1.4-1.4M13.9 6.1l1.4-1.4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></symbol>
+<symbol id="i-out" viewBox="0 0 20 20"><path d="M8 4H4v12h4M12 6l4 4-4 4M16 10H8" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+<symbol id="i-left" viewBox="0 0 20 20"><path d="M12 5l-5 5 5 5" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+<symbol id="i-right" viewBox="0 0 20 20"><path d="M8 5l5 5-5 5" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+<symbol id="i-plus" viewBox="0 0 20 20"><path d="M10 4v12M4 10h12" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></symbol>
+<symbol id="i-warn" viewBox="0 0 20 20"><path d="M10 2.8l7.4 13H2.6z" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/><path d="M10 8v4M10 14.2v.1" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></symbol>
+</defs></svg>
+
+<div class="app">
+  <aside class="side" aria-label="Workspace">
+    <a class="wordmark" href="#">Mobve</a>
+    <a class="side-link" href="#"><svg aria-hidden="true"><use href="#i-home"/></svg>Dashboard</a>
+    <a class="side-link" href="#"><svg aria-hidden="true"><use href="#i-wrench"/></svg>Maintenance requests</a>
+    <a class="side-link" href="#" aria-current="page"><svg aria-hidden="true"><use href="#i-cal"/></svg>Appointments</a>
+    <a class="side-link" href="#"><svg aria-hidden="true"><use href="#i-phone"/></svg>Call log</a>
+    <a class="side-link" href="#"><svg aria-hidden="true"><use href="#i-gear"/></svg>Settings</a>
+    <div class="side-bottom">
+      <a class="side-link" href="#"><svg aria-hidden="true"><use href="#i-out"/></svg>Log out</a>
+      <span class="caption" style="padding:0 var(--space-3)">Your properties. One clear picture.</span>
+    </div>
+  </aside>
+
+  <div class="main">
+    <header class="top">
+      <span class="company">Jackson Properties LLC</span>
+      <div class="tools">
+        <label for="pp" style="position:absolute;left:-9999px">Property</label>
+        <select class="select" id="pp"><option>All properties</option><option>Brookfield Gardens</option><option>Juno Village</option><option>Maple Grove Commons</option><option>Riverwalk Court</option><option>Westhaven Place</option></select>
+        <label for="bb" style="position:absolute;left:-9999px">Building</label>
+        <select class="select" id="bb"><option>All buildings</option></select>
+        <button class="btn btn--secondary btn--compact" type="button">Emma AI</button>
+        <span class="avatar" aria-label="Ariel Soto">AS</span>
+      </div>
+    </header>
+
+    <div class="body">
+      <span class="crumb">All properties › Appointments</span>
+      <div class="page-head">
+        <div style="display:grid;gap:var(--space-1)">
+          <h1>Appointments and leasing</h1>
+          <span class="caption" style="font-size:var(--fs-ui)">Coordinate tours, appointments, follow-up and the leasing journey from one workspace.</span>
+        </div>
+        <div style="display:flex;align-items:center;gap:var(--space-3);flex-wrap:wrap">
+          <span class="caption">Updated 10:35 AM</span>
+          <button class="btn btn--primary" type="button"><svg width="18" height="18" aria-hidden="true"><use href="#i-plus"/></svg>Add appointment</button>
+        </div>
+      </div>
+
+      <div class="tabs" role="tablist" aria-label="Appointments view">
+        <button class="tab" role="tab" type="button" aria-selected="true" id="tab-o">Overview</button>
+        <button class="tab" role="tab" type="button" aria-selected="false" id="tab-p">Pipeline</button>
+      </div>
+
+      <div class="card" style="display:grid;gap:var(--space-4)">
+        <div style="display:grid;gap:var(--space-1)"><h3 style="font-size:var(--fs-body);line-height:var(--lh-body);letter-spacing:0">Reporting filters</h3><span class="caption" style="font-size:var(--fs-ui)">These dates control the scorecards. The schedule below opens on the week of the end date.</span></div>
+        <div class="filters">
+          <div class="field"><label for="mf">Metrics from</label><input class="input" id="mf" type="date" value="2026-10-05"></div>
+          <div class="field"><label for="mt">Metrics to</label><input class="input" id="mt" type="date" value="2026-11-03"></div>
+          <div class="field"><label for="ap">Appointment purpose</label><select class="select" id="ap"><option>All purposes</option><option>Tour</option><option>Second tour</option><option>Lease signing</option><option>Renewal meeting</option><option>Document review</option><option>Key pickup</option><option>Move-in inspection</option><option>Move-out inspection</option><option>Move-in</option><option>Maintenance visit</option><option>Billing or payment consultation</option><option>General</option></select></div>
+          <div class="field"><label for="ho">Host</label><select class="select" id="ho"><option>All hosts</option><option>Assigned to me</option><option>Unassigned</option></select></div>
+        </div>
+      </div>
+
+      <div class="scores">
+        <div class="card score"><span class="caption">Today</span><b>4</b><span class="badge badge--success" style="width:fit-content">All confirmed</span></div>
+        <div class="card score"><span class="caption">Unconfirmed, next 48 h</span><b>2</b><span class="badge badge--warning" style="width:fit-content">Follow up</span></div>
+        <div class="card score"><span class="caption">Show rate</span><b>92%</b><span class="caption">Last 30 days</span></div>
+        <div class="card score"><span class="caption">Median first response</span><b>6 min</b><span class="caption">AI and staff</span></div>
+        <div class="card score"><span class="caption">Tour to application</span><b>38%</b><span class="caption">11 of 29 tours</span></div>
+        <div class="card score"><span class="caption">Stuck prospects</span><b>1</b><span class="badge badge--danger" style="width:fit-content">No follow-up task</span></div>
+      </div>
+
+      <div class="layout">
+        <div class="card" style="display:grid;gap:var(--space-4);min-width:0">
+          <div class="sched-head">
+            <div class="nav-group">
+              <button class="btn btn--secondary btn--compact icon-btn" type="button" aria-label="Previous week"><svg aria-hidden="true"><use href="#i-left"/></svg></button>
+              <button class="btn btn--secondary btn--compact" type="button">Today</button>
+              <button class="btn btn--secondary btn--compact icon-btn" type="button" aria-label="Next week"><svg aria-hidden="true"><use href="#i-right"/></svg></button>
+              <h2>Nov 1 to Nov 7, 2026</h2>
+            </div>
+            <div class="seg" role="group" aria-label="Calendar range">
+              <button type="button" aria-pressed="false">Day</button>
+              <button type="button" aria-pressed="true">Week</button>
+              <button type="button" aria-pressed="false">Month</button>
+            </div>
+          </div>
+          <div class="legend-cats" aria-label="Appointment categories">
+            <span class="cat cat--tour">Tour</span><span class="cat cat--lease">Lease</span><span class="cat cat--inspection">Inspection</span><span class="cat cat--billing">Billing</span><span class="cat cat--maintenance">Maintenance</span><span class="cat">General</span>
+          </div>
+          <div class="cal-wrap" tabindex="0" role="region" aria-label="Week schedule, November 1 to 7">
+            <div class="cal" id="cal"></div>
+          </div>
+          <span class="caption">Times shown in America/Chicago. Select an appointment to see its details.</span>
+          <div class="card detail" id="detail" style="box-shadow:none">
+            <div style="display:flex;justify-content:space-between;align-items:center;gap:var(--space-3);flex-wrap:wrap"><h3 id="d-title" style="font-size:var(--fs-body);letter-spacing:0"></h3><span id="d-cat"></span></div>
+            <span class="caption" id="d-when" style="font-size:var(--fs-ui)"></span>
+            <span id="d-where"></span>
+            <div style="display:flex;gap:var(--space-3);flex-wrap:wrap"><button class="btn btn--primary btn--compact" type="button">Confirm</button><button class="btn btn--secondary btn--compact" type="button">Reschedule</button><button class="btn btn--ghost btn--compact" type="button" id="d-close">Close</button></div>
+          </div>
+        </div>
+
+        <div class="side-panels" style="display:grid;gap:var(--space-5);align-items:start">
+          <div class="card panel">
+            <div style="display:grid;gap:var(--space-1)"><h3>Attention required</h3><span class="caption">Prospects past the stage threshold without an active follow-up task.</span></div>
+            <div class="person">
+              <div class="person-top"><b>Raicelle</b><span class="badge badge--primary">Qualified</span></div>
+              <span class="caption">Maple Grove Commons · Two-bedroom</span>
+              <span class="badge badge--danger" style="width:fit-content">345 h in stage</span>
+              <button class="btn btn--secondary btn--compact" type="button">Review prospect</button>
+            </div>
+          </div>
+          <div class="card panel">
+            <div style="display:grid;gap:var(--space-1)"><h3>Needs a time</h3><span class="caption">Select a verified open slot for each request.</span></div>
+            <div class="person">
+              <div class="person-top"><b>Angelo Stewart</b><span class="cat cat--tour">Tour</span></div>
+              <span class="caption">Maple Grove Commons · Building 1200</span>
+              <button class="btn btn--primary btn--compact" type="button">Choose a time</button>
+            </div>
+            <div class="person">
+              <div class="person-top"><b>Unit 410 resident</b><span class="cat cat--inspection">Inspection</span></div>
+              <span class="caption">Westhaven Place · Move-out</span>
+              <button class="btn btn--primary btn--compact" type="button">Choose a time</button>
+            </div>
+            <div class="notice notice--warning" role="status"><svg aria-hidden="true"><use href="#i-warn"/></svg><div><strong>2 requests waiting more than 24 h</strong><span class="notice__body">Residents were told someone would confirm a time.</span></div></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card" style="display:grid;gap:var(--space-4)">
+        <div style="display:flex;justify-content:space-between;align-items:center;gap:var(--space-3);flex-wrap:wrap"><h3 style="font-size:var(--fs-body);letter-spacing:0">Upcoming appointments</h3><span class="caption">Next 7 days · 14 appointments</span></div>
+        <div class="list-wrap" tabindex="0" role="region" aria-label="Upcoming appointments">
+          <table class="table">
+            <thead><tr><th>When</th><th>Purpose</th><th>Contact</th><th>Property</th><th>Host</th><th>Status</th></tr></thead>
+            <tbody id="rows"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+(function () {
+  var START = 8, HOURS = 10;
+  var days = [
+    { d: "SUN", n: 1 }, { d: "MON", n: 2 }, { d: "TUE", n: 3, today: true }, { d: "WED", n: 4 }, { d: "THU", n: 5 }, { d: "FRI", n: 6 }, { d: "SAT", n: 7 }
+  ];
+  var ev = [
+    { day: 1, s: 10, e: 10.5, cat: "tour", t: "Tour", c: "Raicelle", p: "Maple Grove Commons", h: "Ariel Soto", st: "Confirmed" },
+    { day: 1, s: 15.5, e: 16.5, cat: "maintenance", t: "Maintenance visit", c: "Unit 202", p: "Maple Grove Commons", h: "Sam Lee", st: "Confirmed" },
+    { day: 2, s: 9, e: 9.5, cat: "lease", t: "Key pickup", c: "Unit 104", p: "Juno Village", h: "Ariel Soto", st: "Confirmed" },
+    { day: 2, s: 11.5, e: 12.5, cat: "lease", t: "Lease signing", c: "Unit 208", p: "Riverwalk Court", h: "Ariel Soto", st: "Confirmed" },
+    { day: 2, s: 14, e: 14.5, cat: "tour", t: "Second tour", c: "Dana Ortiz", p: "Westhaven Place", h: "Unassigned", st: "Unconfirmed" },
+    { day: 2, s: 16, e: 16.5, cat: "billing", t: "Billing review", c: "Unit 702", p: "Riverwalk Court", h: "Mia Chen", st: "Confirmed" },
+    { day: 3, s: 9, e: 10, cat: "inspection", t: "Move-in inspection", c: "Unit 104", p: "Juno Village", h: "Sam Lee", st: "Confirmed" },
+    { day: 3, s: 13, e: 13.5, cat: "tour", t: "Tour", c: "Leo Park", p: "Brookfield Gardens", h: "Ariel Soto", st: "Unconfirmed" },
+    { day: 4, s: 10, e: 10.75, cat: "lease", t: "Renewal meeting", c: "Unit 305", p: "Brookfield Gardens", h: "Mia Chen", st: "Confirmed" },
+    { day: 4, s: 13, e: 13.5, cat: "general", t: "Resident meeting", c: "Board", p: "Maple Grove Commons", h: "Ariel Soto", st: "Confirmed" },
+    { day: 4, s: 15, e: 15.5, cat: "billing", t: "Payment plan", c: "Unit 12", p: "Juno Village", h: "Mia Chen", st: "Confirmed" },
+    { day: 5, s: 8.5, e: 9.5, cat: "maintenance", t: "Maintenance visit", c: "Unit 14", p: "Juno Village", h: "Sam Lee", st: "Confirmed" },
+    { day: 5, s: 12, e: 13, cat: "inspection", t: "Move-out inspection", c: "Unit 305", p: "Brookfield Gardens", h: "Sam Lee", st: "Cancelled" },
+    { day: 6, s: 11, e: 11.5, cat: "tour", t: "Tour", c: "Amaya Ruiz", p: "Riverwalk Court", h: "Ariel Soto", st: "Confirmed" }
+  ];
+  var catName = { tour: "Tour", lease: "Lease", inspection: "Inspection", billing: "Billing", maintenance: "Maintenance", general: "General" };
+  function fmt(x) { var h = Math.floor(x), m = Math.round((x - h) * 60); var ap = h >= 12 ? "PM" : "AM"; var hh = h % 12 || 12; return hh + ":" + String(m).padStart(2, "0") + " " + ap; }
+  function el(tag, cls, html) { var e = document.createElement(tag); if (cls) e.className = cls; if (html != null) e.innerHTML = html; return e; }
+  function esc(s) { return String(s).replace(/[&<>"]/g, function (c) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]; }); }
+
+  var cal = document.getElementById("cal");
+  cal.appendChild(el("div", "cal-h", ""));
+  days.forEach(function (d) { cal.appendChild(el("div", "cal-h" + (d.today ? " is-today" : ""), "<span>" + d.d + "</span><b>" + d.n + "</b>")); });
+  var times = el("div", "times");
+  for (var i = 1; i < HOURS; i++) { var s = el("span", null, fmt(START + i).replace(":00", "")); s.style.top = "calc(var(--hour) * " + i + ")"; times.appendChild(s); }
+  cal.appendChild(times);
+  var cols = days.map(function (d) { var c = el("div", "day" + (d.today ? " is-today" : "")); cal.appendChild(c); return c; });
+  var now = el("div", "now"); now.style.top = "calc(var(--hour) * " + (10.6 - START) + ")"; now.setAttribute("aria-hidden", "true"); cols[2].appendChild(now);
+
+  ev.forEach(function (x, idx) {
+    var b = el("button", "event event--" + x.cat);
+    b.type = "button";
+    b.style.top = "calc(var(--hour) * " + (x.s - START) + " + 1px)";
+    b.style.height = "calc(var(--hour) * " + (x.e - x.s) + " - 3px)";
+    b.style.textAlign = "left";
+    b.style.font = "inherit";
+    b.style.border = "0";
+    b.style.borderLeft = "4px solid var(--cat)";
+    b.innerHTML = "<b>" + esc(x.t) + "</b><span>" + fmt(x.s) + " · " + esc(x.c) + " · " + esc(x.p) + "</span>";
+    b.setAttribute("aria-label", x.t + ", " + days[x.day].d + " " + days[x.day].n + ", " + fmt(x.s) + ", " + x.p);
+    b.title = fmt(x.s) + " " + x.t + " · " + x.c + " · " + x.p;
+    if (x.st === "Cancelled") { b.style.opacity = "0.55"; b.style.textDecoration = "line-through"; }
+    b.addEventListener("click", function () { show(idx); });
+    cols[x.day].appendChild(b);
+  });
+
+  var detail = document.getElementById("detail");
+  function show(i) {
+    var x = ev[i];
+    document.getElementById("d-title").textContent = x.t;
+    document.getElementById("d-cat").innerHTML = '<span class="cat cat--' + x.cat + '">' + catName[x.cat] + "</span>";
+    document.getElementById("d-when").textContent = days[x.day].d.charAt(0) + days[x.day].d.slice(1).toLowerCase() + " Nov " + days[x.day].n + ", " + fmt(x.s) + " to " + fmt(x.e) + " · Host: " + x.h;
+    document.getElementById("d-where").textContent = x.c + " · " + x.p;
+    detail.classList.add("is-open");
+  }
+  document.getElementById("d-close").addEventListener("click", function () { detail.classList.remove("is-open"); });
+
+  var status = { Confirmed: "badge--success", Unconfirmed: "badge--warning", Cancelled: "badge--danger" };
+  var rows = document.getElementById("rows");
+  ev.slice().sort(function (a, b) { return a.day - b.day || a.s - b.s; }).forEach(function (x) {
+    var tr = el("tr");
+    tr.innerHTML = "<td>" + days[x.day].d.charAt(0) + days[x.day].d.slice(1).toLowerCase() + " " + days[x.day].n + ", " + fmt(x.s) + "</td>" +
+      '<td><span class="cat cat--' + x.cat + '">' + esc(x.t) + "</span></td><td>" + esc(x.c) + "</td><td>" + esc(x.p) + "</td>" +
+      "<td" + (x.h === "Unassigned" ? ' class="caption"' : "") + ">" + esc(x.h) + "</td>" +
+      '<td><span class="badge ' + status[x.st] + '">' + x.st + "</span></td>";
+    rows.appendChild(tr);
+  });
+
+  document.querySelectorAll('[role="tablist"]').forEach(function (list) {
+    var tabs = list.querySelectorAll('[role="tab"]');
+    tabs.forEach(function (t) { t.addEventListener("click", function () { tabs.forEach(function (o) { o.setAttribute("aria-selected", String(o === t)); }); }); });
+  });
+  document.querySelectorAll(".seg button").forEach(function (b, _, all) {
+    b.addEventListener("click", function () { all.forEach(function (o) { o.setAttribute("aria-pressed", String(o === b)); }); });
+  });
+})();
+</script>
+</body>
+</html>

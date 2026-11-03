@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Website audit: mobve.com | Mobve audit</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&amp;display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../design-system/mobve-design-system.css">
+<style>
+:root { --font-sans: "Inter", "Inter Variable", system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif; color-scheme: light; }
+body { background: var(--color-bg); }
+.docnav { display: flex; flex-wrap: wrap; gap: var(--space-1); padding: var(--space-3) var(--gutter); background: var(--color-paper); border-bottom: 1px solid var(--color-divider); }
+.docnav a { display: inline-flex; align-items: center; min-height: 36px; padding: 0 var(--space-3); border-radius: var(--radius-sm); color: var(--color-muted); font-size: var(--fs-ui); font-weight: var(--fw-medium); text-decoration: none; }
+.docnav a:hover { background: var(--color-tint); color: var(--color-primary); }
+.docnav a[aria-current="page"] { background: var(--color-tint); color: var(--color-primary); }
+.doc { max-width: 900px; margin: var(--space-6) auto var(--space-9); padding: var(--space-7) var(--space-6); background: var(--color-paper); border: 1px solid var(--color-divider); border-radius: var(--radius-md); display: grid; gap: var(--space-4); }
+.doc h1 { font-size: clamp(2rem, 1.5rem + 2vw, 2.75rem); line-height: 1.12; }
+.doc h2 { font-size: var(--fs-h3); line-height: var(--lh-h3); letter-spacing: var(--ls-h3); margin-top: var(--space-5); padding-top: var(--space-4); border-top: 1px solid var(--color-divider); }
+.doc h3 { font-size: 1.125rem; line-height: 1.35; letter-spacing: 0; margin-top: var(--space-3); }
+.doc p, .doc li { max-width: 75ch; }
+.doc ul, .doc ol { margin: 0; padding-left: 1.4rem; display: grid; gap: var(--space-2); }
+.doc code { font-size: 0.85em; background: var(--color-bg); border: 1px solid var(--color-divider); padding: 0 5px; border-radius: 5px; overflow-wrap: anywhere; }
+.table-wrap { overflow-x: auto; border: 1px solid var(--color-divider); border-radius: var(--radius-sm); }
+.doc .table th, .doc .table td { vertical-align: top; }
+.docfoot { max-width: 900px; margin: 0 auto var(--space-7); padding: 0 var(--space-6); }
+@page { size: A4; margin: 16mm 14mm; }
+@media print {
+  body { background: #fff; }
+  .docnav, .docfoot { display: none; }
+  .doc { margin: 0; padding: 0; border: 0; max-width: none; }
+  .doc h2 { break-after: avoid; }
+  .doc h3 { break-after: avoid; }
+  .table-wrap { overflow: visible; border: 0; }
+  .doc .table { font-size: 11px; }
+  .doc .table tr { break-inside: avoid; }
+  a { color: var(--color-ink); }
+}
+</style>
+</head>
+<body>
+<nav class="docnav" aria-label="Documents"><a href="00-summary.html">Summary</a><a href="01-website-audit.html" aria-current="page">Website audit</a><a href="02-indexing.html">Indexing</a><a href="03-app-audit.html">App audit</a><a href="04-app-click-test.html">App click test</a><a href="05-design-system.html">Design system</a><a href="06-prototypes.html">Prototypes</a></nav>
+<main class="doc">
+<h1 id="website-audit-mobve-com">Website audit: mobve.com</h1>
+<p>Date: 2026-11-03. Scope: the public website (home and 11 inner pages), the exits to the app, the front-end code the site serves, performance, SEO, graphic design, design system, responsive and hover behavior.</p>
+<p>Context confirmed by the owner: mobve.com is the real site, deployed for testing. Section 2 lists defects that are real at any stage. Section 3 lists items that are expected in a test deployment and must be closed before launch.</p>
+<h2 id="1-what-works">1. What works</h2>
+<h3 id="1-1-flow-and-links">1.1 Flow and links</h3>
+<ul><li>All 11 inner pages answer 200 with a correct title and a single h1: security, contact, privacy, pricing, integrations, about, brand, terms, accessibility, credits, review.</li><li>Every anchor used on the home exists (demo, pricing, portfolios, property-life, faq, top, main), and so do the pricing anchors (essentials, ai_operations, portfolio, enterprise).</li><li>Unknown routes return a real 404. /index.html answers 200 as a duplicate of / and the canonical covers it.</li><li>The four plan buttons carry the plan in the URL (register?plan=...), so the app can pre-select it.</li><li>The app login loads, with labeled fields and correct autocomplete.</li><li>The mobile menu closes after choosing a link and with Escape, and returns focus to its button.</li></ul>
+<h3 id="1-2-ux-and-accessibility">1.2 UX and accessibility</h3>
+<ul><li>Lighthouse Accessibility 100 on desktop and mobile. Skip link, landmarks, html lang, one h1 per page.</li><li>No icon-only control without an accessible name. Every image has alt text, the logo link included.</li><li>Visible focus styles, no outline removed, prefers-reduced-motion handled, dvh used.</li><li>Tabs use arrow, Home and End keys. FAQ uses native details. Plan dialogs use the native dialog element.</li><li>Demo consent checkbox required before a call. Pricing table in a scrollable region with caption and scoped headers.</li></ul>
+<h3 id="1-3-graphic-design">1.3 Graphic design</h3>
+<ul><li>Strong hierarchy in the hero: two-tone headline, one primary button, one secondary link, a supporting image with a data card.</li><li>Coherent real photography with credits and honest "illustrative" labels.</li><li>Restrained palette with generous spacing and a fixed maximum width.</li><li>The primary button is identical everywhere and has a clear hover (darker fill, 1 px lift, 0.2 s).</li><li>Calm, plain product voice. Fictional data labeled as fictional.</li></ul>
+<h3 id="1-4-performance">1.4 Performance</h3>
+<ul><li>LCP 1.97 s on a cold desktop load, 0.65 s on mobile emulation (Fast 4G, 4x CPU). CLS 0.00 on load and over a full scroll. No long tasks.</li><li>13 KB JavaScript, 15 KB CSS, 598 DOM nodes, 21 requests. Server answers in 61 to 88 ms when measured directly.</li></ul>
+<h3 id="1-5-seo-and-technical">1.5 SEO and technical</h3>
+<ul><li>Home: title 52 characters, description 157 characters, canonical, Open Graph and Twitter cards, JSON-LD (Organization, WebSite). Lighthouse SEO 100.</li><li>robots.txt and sitemap.xml valid. Search Console verification tag present.</li><li>Strict Content-Security-Policy, nosniff, referrer-policy no-referrer, permissions-policy limiting the microphone. Served through Cloudflare over HTTP/2.</li><li>Public front-end code: no secrets in config.js, dynamic text inserted with textContent, audio payload size limits, a request id against duplicate leads, provider codes validated with a strict pattern.</li></ul>
+<h2 id="2-real-defects-any-stage">2. Real defects (any stage)</h2>
+<h3 id="high">High</h3>
+<ol><li>Dead link: about.html and contact.html link to mobve.com/#waitlist ("Request early access"). The section does not exist on the home, so the click lands at the top with no message.</li><li>Cloudflare script blocked by the site's own policy: on every load an inline Cloudflare script (window.__CF$cv$params) is blocked by script-src 'self'. One console error, one Issues entry and one 401 request error appear on every visit, and Lighthouse Best Practices drops to 92. Fix: disable that Cloudflare feature or allow it with a hash (validate in the Cloudflare dashboard).</li><li>The brand font is not delivered: the CSS names Inter but there is no @font-face and no font file, so the page uses the system font. Weights 550, 620, 650 and 750 collapse to the nearest available weight.</li><li>The floating "Ask Mobve" button (64 x 87 px, fixed bottom right) covers body text at 320, 390 and 768 px, with its label directly over content.</li></ol>
+<h3 id="medium">Medium</h3>
+<ol start="5"><li>Type scale: 20 font sizes from 9 to 56 px and 8 weights. Text of 8 to 10 px in the hero eyebrow, photo captions and the hero data card (measured on mobile). Minimum should be 12 px.</li><li>Touch targets under 44 px: 27 elements on desktop and 22 on mobile (nav links 21 px high, Log in and Sign up 28 to 32 px, footer links 36 px, consent checkbox 18 px, privacy notice link 13 px, "Compare all plan details" 14 px).</li><li>Design system incomplete: 11 CSS tokens, no semantic colors, no type, radius, shadow or motion tokens; 9 border radii and 21 text colors in use; button styles differ between home and inner pages.</li><li>Hover and pressed states: no :active rule anywhere. Footer links, FAQ questions, language buttons and the chat launcher show no hover change.</li><li>The 8 property-type cards look like cards but are not links or buttons, and each repeats the label "PROPERTY OPERATIONS".</li><li>Heading structure: footer column titles and the "Everything in ..." lines in pricing are h2.</li><li>Pricing has four equal cards and no recommended plan. FAQ has only 4 questions and uses the default triangle while pricing uses a "+" for the same pattern. The footer has no contact details, address or legal entity.</li><li>Inner pages have no main navigation, and container widths vary (about 820 px for text pages, about 1,080 px for pricing).</li><li>Images: 150 to 300 KB JPEGs, about 1.5 MB avoidable on mobile. The logo PNG is 856 px wide and shown at 70 to 164 px. width and height attributes do not match the real aspect ratio of several portfolio images.</li><li>Redirects: www.mobve.com returns 404 and http to https uses 302.</li><li>The pricing table scroll region on mobile is not keyboard focusable and has no label.</li></ol>
+<h3 id="responsive">Responsive</h3>
+<ol start="16"><li>Text under 12 px on mobile (hero card, caption, eyebrow).</li><li>The desktop navigation is hidden up to at least 768 px, so tablets get the hamburger although there is room for six links.</li><li>The hero headline leaves "next." alone on its line at 320 and 768 px.</li></ol>
+<h3 id="contrast">Contrast</h3>
+<ol start="19"><li>Hero text over the photo passes today but is fragile: measured against the real pixels the headline reaches at least 3.97:1 (large text needs 3:1) and the caption 7.2:1. A lighter photo would fail. Fix: a solid dark scrim and a caption of at least 12 px.</li></ol>
+<h3 id="low">Low</h3>
+<ol start="20"><li>Menu, language, demo and chat buttons use type="submit" outside a form.</li><li>The portfolio carousel repeats 8 images; confirm the copies are hidden from screen readers.</li><li>The phone field in the lead form accepts letters.</li></ol>
+<h2 id="3-pre-launch-checklist">3. Pre-launch checklist</h2>
+<ol><li>Contact path: the chat is down ("Chat is unavailable right now"), the only form is inside the chat, and contact.html has no form, email or phone.</li><li>Demo: /api/demo/voice/status answers 401 (sign_in_required) and sometimes 503, while Call Now still looks active.</li><li>Private preview content: banner "Private preview, Draft material for review", "Review notes" link to review.html, "Before this page goes public" on contact.html, draft titles on pricing, privacy and terms.</li><li>App links point to the staging host. Switch to the production app host.</li><li>Indexing: see the indexing document.</li><li>Caching: every response is sent with Cache-Control no-store, so each visit downloads about 2 MB.</li><li>Security headers: no Strict-Transport-Security, no frame-ancestors or X-Frame-Options, no Cross-Origin-Opener-Policy. The app sends all of them.</li><li>Inner page metadata and sitemap need clean titles, descriptions and entries when they go public.</li><li>Staging app host: login and register are noindex only through a meta tag; add an X-Robots-Tag header.</li></ol>
+<h2 id="4-hover-test-computed-styles-on-real-hover">4. Hover test (computed styles on real hover)</h2>
+<div class="table-wrap"><table class="table"><thead><tr><th>Element</th><th>Result</th></tr></thead><tbody><tr><td>Nav links</td><td>Color changes, no transition</td></tr><tr><td>Primary buttons</td><td>Fill darkens, 1 px lift, 0.2 s. Consistent</td></tr><tr><td>See how it works, Log in</td><td>Color or underline changes, no transition</td></tr><tr><td>Scenario tab</td><td>Lifts 2 px, no color change</td></tr><tr><td>See all features</td><td>Very subtle color shift</td></tr><tr><td>Language toggle, FAQ question, footer link, chat button</td><td>No visible change</td></tr><tr><td>Property cards</td><td>Not interactive</td></tr></tbody></table></div>
+<h2 id="5-performance-and-seo-detail">5. Performance and SEO detail</h2>
+<ul><li>Desktop cold load: LCP 1,974 ms (hero image); the 1.8 s server time in that trace was a cold connection, direct measurement gives 61 to 88 ms.</li><li>Weight: 1,991 KB transferred, of which 1,964 KB images.</li><li>Lighthouse: Accessibility 100, SEO 100, Best Practices 92 (the CSP-blocked Cloudflare script and the 401 status request).</li><li>Only the home is indexable; there are no solution pages, use cases or blog. The Spanish switch only changes the demo language, so hreflang is not needed today. No llms.txt; FAQ has no FAQPage schema.</li></ul>
+<h2 id="6-forms-and-chat">6. Forms and chat</h2>
+<p>The only form is the "Request team contact" lead form inside the chat. Opening the chat started a real session request that failed. Without a session the form cannot be opened and nothing was submitted. Validation was checked on the form definition without sending: required name, email and consent; native email check; maximum lengths 100, 254, 35 and 500; choosing Phone makes the phone required.</p>
+<p>How the chat should be tested (in a test environment or with approved test data): start, send a message, empty and 800-character messages, 2-minute idle, contact form with empty, invalid and valid data, duplicate submit, network failure, keyboard and screen reader, retention text, cleanup of the test lead.</p>
+<h2 id="7-scope">7. Scope</h2>
+<ul><li>Code read in full: config.js, voice.js, site-chat.js, app.js. Read in part: styles.css. Downloaded but not read: demo-data.js, portfolios-carousel.js, site-chat.css, audio-capture.js.</li><li>Not seen: server code, repository, Cloudflare and DNS settings, Search Console. The backend was not probed.</li><li>Not verified: the voice call, chat messages and lead submission, keyboard-only and screen reader runs, landscape, print.</li></ul>
+<h2 id="8-corrections-made-during-the-audit">8. Corrections made during the audit</h2>
+<ul><li>review.html is linked from the banner of the inner pages, not from the home.</li><li>No hreflang is needed: the Spanish switch only affects the demo.</li><li>The empty footer link is the logo image, which has alt text.</li><li>One Cloudflare script is blocked per load, not two.</li><li>Draft banners, staging links and the non-working demo moved to the pre-launch list once the owner confirmed the site is a test deployment.</li></ul>
+</main>
+<footer class="docfoot caption">Mobve frontend audit and design system · 2026-11-03 · Source: docs/src/01-website-audit.md</footer>
+</body>
+</html>

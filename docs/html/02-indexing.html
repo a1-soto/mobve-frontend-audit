@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Indexing: status and how to change it | Mobve audit</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&amp;display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../design-system/mobve-design-system.css">
+<style>
+:root { --font-sans: "Inter", "Inter Variable", system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif; color-scheme: light; }
+body { background: var(--color-bg); }
+.docnav { display: flex; flex-wrap: wrap; gap: var(--space-1); padding: var(--space-3) var(--gutter); background: var(--color-paper); border-bottom: 1px solid var(--color-divider); }
+.docnav a { display: inline-flex; align-items: center; min-height: 36px; padding: 0 var(--space-3); border-radius: var(--radius-sm); color: var(--color-muted); font-size: var(--fs-ui); font-weight: var(--fw-medium); text-decoration: none; }
+.docnav a:hover { background: var(--color-tint); color: var(--color-primary); }
+.docnav a[aria-current="page"] { background: var(--color-tint); color: var(--color-primary); }
+.doc { max-width: 900px; margin: var(--space-6) auto var(--space-9); padding: var(--space-7) var(--space-6); background: var(--color-paper); border: 1px solid var(--color-divider); border-radius: var(--radius-md); display: grid; gap: var(--space-4); }
+.doc h1 { font-size: clamp(2rem, 1.5rem + 2vw, 2.75rem); line-height: 1.12; }
+.doc h2 { font-size: var(--fs-h3); line-height: var(--lh-h3); letter-spacing: var(--ls-h3); margin-top: var(--space-5); padding-top: var(--space-4); border-top: 1px solid var(--color-divider); }
+.doc h3 { font-size: 1.125rem; line-height: 1.35; letter-spacing: 0; margin-top: var(--space-3); }
+.doc p, .doc li { max-width: 75ch; }
+.doc ul, .doc ol { margin: 0; padding-left: 1.4rem; display: grid; gap: var(--space-2); }
+.doc code { font-size: 0.85em; background: var(--color-bg); border: 1px solid var(--color-divider); padding: 0 5px; border-radius: 5px; overflow-wrap: anywhere; }
+.table-wrap { overflow-x: auto; border: 1px solid var(--color-divider); border-radius: var(--radius-sm); }
+.doc .table th, .doc .table td { vertical-align: top; }
+.docfoot { max-width: 900px; margin: 0 auto var(--space-7); padding: 0 var(--space-6); }
+@page { size: A4; margin: 16mm 14mm; }
+@media print {
+  body { background: #fff; }
+  .docnav, .docfoot { display: none; }
+  .doc { margin: 0; padding: 0; border: 0; max-width: none; }
+  .doc h2 { break-after: avoid; }
+  .doc h3 { break-after: avoid; }
+  .table-wrap { overflow: visible; border: 0; }
+  .doc .table { font-size: 11px; }
+  .doc .table tr { break-inside: avoid; }
+  a { color: var(--color-ink); }
+}
+</style>
+</head>
+<body>
+<nav class="docnav" aria-label="Documents"><a href="00-summary.html">Summary</a><a href="01-website-audit.html">Website audit</a><a href="02-indexing.html" aria-current="page">Indexing</a><a href="03-app-audit.html">App audit</a><a href="04-app-click-test.html">App click test</a><a href="05-design-system.html">Design system</a><a href="06-prototypes.html">Prototypes</a></nav>
+<main class="doc">
+<h1 id="indexing-status-and-how-to-change-it">Indexing: status and how to change it</h1>
+<p>Date: 2026-11-03. Scope: mobve.com and the staging app host. Context: the site is the real domain, deployed for testing.</p>
+<h2 id="1-what-was-found">1. What was found</h2>
+<ul><li>Home (/ and /index.html): robots, googlebot and bingbot meta set to "index,follow,max-image-preview:large,max-snippet:-1". No X-Robots-Tag header. Self-referencing canonical. Googlebot receives 200 and the full page. The home is fully eligible to be indexed.</li><li>Inner pages: "noindex,nofollow" in the meta tag, and also in an X-Robots-Tag header (confirmed on security, pricing, contact and review).</li><li>robots.txt allows everything and announces the sitemap. sitemap.xml lists only the home, without lastmod.</li><li>A google-site-verification tag is present, so a Search Console property was probably created. Its data could not be read.</li><li>Staging app host: login and register have a noindex meta tag; there is no robots.txt and no X-Robots-Tag header.</li><li>Variants: http answers 302 to https; <a href="https://www.mobve.com">https://www.mobve.com</a> answers 404.</li></ul>
+<p>Is it indexed today? A public web search for "site:mobve.com" returned nothing, but that is weak evidence. Confirm in Search Console (URL Inspection, Pages report) or with a site: search in Google.</p>
+<p>Risk: the home asks to be indexed while it shows draft pricing and a demo that does not work. A search snippet could show that under the real brand.</p>
+<h2 id="2-option-a-keep-it-out-of-the-index-while-testing-recommended-until-launch">2. Option A: keep it out of the index while testing (recommended until launch)</h2>
+<p>Do not block crawling first: a blocked page never shows Google its noindex.</p>
+<ol><li>Set the three robots meta tags on the home to "noindex,nofollow".</li><li>Add an X-Robots-Tag "noindex, nofollow" response header for the whole site in Cloudflare (Transform Rules), so it can be turned off in one place.</li><li>Remove the Sitemap line from robots.txt and empty or remove sitemap.xml. Keep "Allow: /".</li><li>Add the same header to the staging app host.</li><li>If already indexed: Search Console Removals, prefix <a href="https://mobve.com/">https://mobve.com/</a> (about 6 months while the noindex stays). Bing Webmaster Tools, Block URLs.</li><li>Verify with URL Inspection ("Excluded by noindex tag") and with curl -sI <a href="https://mobve.com/.">https://mobve.com/.</a></li><li>Optional, after the pages drop out: put the test site behind Cloudflare Access, basic auth or an IP allowlist.</li></ol>
+<h2 id="3-option-b-keep-it-indexed-and-up-to-date">3. Option B: keep it indexed and up to date</h2>
+<ol><li>Remove draft text from snippets, or mark it with data-nosnippet, or limit snippets with max-snippet:160.</li><li>Make the demo state honest.</li><li>Fix variants: 301 from www and from http.</li><li>For each page that should rank: index,follow, self canonical, unique title (50 to 60 characters) and description (150 to 160), Open Graph, schema (Organization, FAQPage, Offer when prices are approved).</li><li>Sitemap with every indexable URL and real lastmod; submit it in Search Console and Bing.</li><li>After changes: update lastmod, request indexing for the changed URL, use IndexNow for Bing; removed pages return 404 or 410; moved pages keep a 301 for a year.</li><li>Monitor the Pages and Performance reports, Core Web Vitals and structured data.</li></ol>
+<h2 id="4-switching-from-testing-to-launch">4. Switching from testing to launch</h2>
+<ol><li>Remove the X-Robots-Tag rule.</li><li>Set the chosen pages to index,follow with clean metadata.</li><li>Remove the preview banner and the Review notes link.</li><li>Add all indexable pages to the sitemap and restore the Sitemap line.</li><li>Fix www and http redirects.</li><li>Submit the sitemap and request indexing for the home, pricing and contact.</li></ol>
+<h2 id="5-recommendation">5. Recommendation</h2>
+<p>Option A until launch, then section 4. First confirm in Search Console whether the home is already indexed, and who owns that property.</p>
+</main>
+<footer class="docfoot caption">Mobve frontend audit and design system · 2026-11-03 · Source: docs/src/02-indexing.md</footer>
+</body>
+</html>

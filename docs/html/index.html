@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Mobve frontend audit and design system: summary | Mobve audit</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&amp;display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../design-system/mobve-design-system.css">
+<style>
+:root { --font-sans: "Inter", "Inter Variable", system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif; color-scheme: light; }
+body { background: var(--color-bg); }
+.docnav { display: flex; flex-wrap: wrap; gap: var(--space-1); padding: var(--space-3) var(--gutter); background: var(--color-paper); border-bottom: 1px solid var(--color-divider); }
+.docnav a { display: inline-flex; align-items: center; min-height: 36px; padding: 0 var(--space-3); border-radius: var(--radius-sm); color: var(--color-muted); font-size: var(--fs-ui); font-weight: var(--fw-medium); text-decoration: none; }
+.docnav a:hover { background: var(--color-tint); color: var(--color-primary); }
+.docnav a[aria-current="page"] { background: var(--color-tint); color: var(--color-primary); }
+.doc { max-width: 900px; margin: var(--space-6) auto var(--space-9); padding: var(--space-7) var(--space-6); background: var(--color-paper); border: 1px solid var(--color-divider); border-radius: var(--radius-md); display: grid; gap: var(--space-4); }
+.doc h1 { font-size: clamp(2rem, 1.5rem + 2vw, 2.75rem); line-height: 1.12; }
+.doc h2 { font-size: var(--fs-h3); line-height: var(--lh-h3); letter-spacing: var(--ls-h3); margin-top: var(--space-5); padding-top: var(--space-4); border-top: 1px solid var(--color-divider); }
+.doc h3 { font-size: 1.125rem; line-height: 1.35; letter-spacing: 0; margin-top: var(--space-3); }
+.doc p, .doc li { max-width: 75ch; }
+.doc ul, .doc ol { margin: 0; padding-left: 1.4rem; display: grid; gap: var(--space-2); }
+.doc code { font-size: 0.85em; background: var(--color-bg); border: 1px solid var(--color-divider); padding: 0 5px; border-radius: 5px; overflow-wrap: anywhere; }
+.table-wrap { overflow-x: auto; border: 1px solid var(--color-divider); border-radius: var(--radius-sm); }
+.doc .table th, .doc .table td { vertical-align: top; }
+.docfoot { max-width: 900px; margin: 0 auto var(--space-7); padding: 0 var(--space-6); }
+@page { size: A4; margin: 16mm 14mm; }
+@media print {
+  body { background: #fff; }
+  .docnav, .docfoot { display: none; }
+  .doc { margin: 0; padding: 0; border: 0; max-width: none; }
+  .doc h2 { break-after: avoid; }
+  .doc h3 { break-after: avoid; }
+  .table-wrap { overflow: visible; border: 0; }
+  .doc .table { font-size: 11px; }
+  .doc .table tr { break-inside: avoid; }
+  a { color: var(--color-ink); }
+}
+</style>
+</head>
+<body>
+<nav class="docnav" aria-label="Documents"><a href="00-summary.html" aria-current="page">Summary</a><a href="01-website-audit.html">Website audit</a><a href="02-indexing.html">Indexing</a><a href="03-app-audit.html">App audit</a><a href="04-app-click-test.html">App click test</a><a href="05-design-system.html">Design system</a><a href="06-prototypes.html">Prototypes</a></nav>
+<main class="doc">
+<h1 id="mobve-frontend-audit-and-design-system-summary">Mobve frontend audit and design system: summary</h1>
+<p>Date: 2026-11-03. Scope: the public website mobve.com and the staff app on the staging host, plus a proposed design system and prototypes.</p>
+<p>Context: mobve.com is the real site, deployed for testing. The staff app runs on a staging host. Findings are therefore split into defects that are real at any stage and items to close before launch.</p>
+<h2 id="documents">Documents</h2>
+<div class="table-wrap"><table class="table"><thead><tr><th>#</th><th>Document</th><th>What it covers</th></tr></thead><tbody><tr><td>01</td><td><a href="01-website-audit.html">Website audit</a></td><td>Flow, links, UX, graphic design, design system, responsive, contrast, hover, performance, SEO, forms and chat, security headers</td></tr><tr><td>02</td><td><a href="02-indexing.html">Indexing</a></td><td>Current indexing signals and how to remove the site from search or keep it indexed</td></tr><tr><td>03</td><td><a href="03-app-audit.html">App audit</a></td><td>Staff workspace: map, UX, accessibility, responsive, performance, security headers, design</td></tr><tr><td>04</td><td><a href="04-app-click-test.html">App click test</a></td><td>Every control in the app and where it leads</td></tr><tr><td>05</td><td><a href="05-design-system.html">Design system</a></td><td>The proposed system: color, type, space, components, states, charts, categories</td></tr><tr><td>06</td><td><a href="06-prototypes.html">Prototypes</a></td><td>The prototypes and which findings each one answers</td></tr></tbody></table></div>
+<p>Related files in this repository:</p>
+<ul><li><code>design-system/mobve-design-system.css</code>: the system's values and components.</li><li><code>design-system/index.html</code>: the design system reference page with live specimens.</li><li><code>design-system/prototype.html</code>: website and app prototype.</li><li><code>design-system/appointments.html</code>: Appointments screen prototype.</li><li><code>diagrams/web-flow.pdf</code> and <code>diagrams/app-flow.pdf</code> (with HTML versions): flow diagrams of the website and the app, also on the Miro board <a href="https://miro.com/app/board/uXjVESDiKo0=/">https://miro.com/app/board/uXjVESDiKo0=/</a></li></ul>
+<h2 id="most-important-findings">Most important findings</h2>
+<h3 id="website-mobve-com">Website (mobve.com)</h3>
+<ol><li>No working way to contact the company: the chat is down, the only form lives inside the chat, and contact.html links to a section (#waitlist) that does not exist.</li><li>The 60-second demo, the main call to action, does not work for visitors: its status API answers 401 or 503.</li><li>Draft and internal content is public: a "Private preview" banner, a link to an internal checklist (review.html), draft titles on pricing, privacy and terms.</li><li>The brand font is named but never loaded, so the site renders in the system font.</li><li>The design system is incomplete: 20 font sizes, many touch targets under 44 px, missing hover and pressed states, six different blues across site and app.</li></ol>
+<h3 id="staff-app">Staff app</h3>
+<ol><li>Settings, Resident requests fails to load, and its Try again button sends no request.</li><li>Appointments, Pipeline view: the heading and the Add appointment button are pushed past the right edge of a 1440 px screen.</li><li>Every page has the same browser title, and all Settings pages share the h1 "Settings".</li><li>Most text is 10 to 12 px and touch targets do not use the declared 44 px size.</li><li>Save buttons are enabled without changes on nine Settings pages, while others stay disabled until a change.</li></ol>
+<h3 id="before-launch">Before launch</h3>
+<p>App links point to the staging host, the home page is indexable while the site is in testing, every file is served with no-store caching, and the public site has no HSTS or frame-ancestors header (the app has both).</p>
+<h2 id="proposed-solution">Proposed solution</h2>
+<p>A single design system for the website and the app (document 05), and prototypes that apply it (document 06):</p>
+<ul><li>Color: six base colors (primary #0b63ce, secondary #ffc845, ink #101b2b, paper #ffffff, muted #536173, background #fafafa), three traffic-light semantic signals with a dark text each, five appointment category colors, and every state and tint calculated from these.</li><li>Type: Inter Variable, nine roles, three weights, nothing under 12 px.</li><li>Components with every state defined: hover, pressed, focus, disabled, loading, error.</li><li>Patterns that fix specific findings: a contact form that does not depend on the chat, an honest unavailable state for the demo, a recommended pricing plan, larger chart legends, category colors that never read as status.</li></ul>
+<h2 id="scope-and-limits">Scope and limits</h2>
+<ul><li>Reviewed: the rendered website and app in the browser, the public website JavaScript (config.js, voice.js, site-chat.js, app.js read in full), HTTP headers, Lighthouse, performance traces.</li><li>Not seen: the app's source code, the backend and its repository, Cloudflare and DNS settings, Search Console.</li><li>Not tested: actions that save, send, download or end the session; other roles; populated data.</li><li>The code security method was applied only to the public website files. A full code audit needs the repository.</li></ul>
+<h2 id="tools-and-process">Tools and process</h2>
+<p>Chrome extension for browser automation (navigation, DOM and style inspection, scripts, hover, screenshots, console and network), browser DevTools tools (device emulation, Lighthouse, performance traces), command line (HTTP headers, redirects, files), Miro for flow diagrams. Method references: a design system checklist, an SEO audit framework, a graphic design foundations guide, a brand identity method (category color research), and a code security audit method applied in a limited way.</p>
+</main>
+<footer class="docfoot caption">Mobve frontend audit and design system · 2026-11-03 · Source: docs/src/00-summary.md</footer>
+</body>
+</html>

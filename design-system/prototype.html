@@ -1,0 +1,413 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Mobve Prototype</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&amp;display=swap" rel="stylesheet">
+<link rel="stylesheet" href="mobve-design-system.css">
+<style>
+/* Layout idea: two real screens stacked, the public website then the staff app, both drawn only with the system's tokens and classes. */
+:root { --font-sans: "Inter", "Inter Variable", system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif; color-scheme: light; }
+body { background: var(--color-bg); }
+.proto-switch { position: sticky; top: 0; z-index: 10; display: flex; gap: var(--space-2); justify-content: center; padding: var(--space-2); background: var(--color-ink); }
+.proto-switch a { color: var(--color-paper); text-decoration: none; font-size: var(--fs-ui); font-weight: var(--fw-medium); padding: var(--space-2) var(--space-4); border-radius: var(--radius-pill); }
+.proto-switch a:hover { background: color-mix(in srgb, var(--color-paper) 14%, transparent); color: var(--color-paper); }
+.proto-label { padding: var(--space-6) var(--gutter) var(--space-3); max-width: var(--container); margin: 0 auto; }
+.proto-frame { border-top: 1px solid var(--color-divider); border-bottom: 1px solid var(--color-divider); }
+
+/* Website */
+.site-util { background: var(--color-paper); border-bottom: 1px solid var(--color-divider); }
+.site-util .container { display: flex; justify-content: flex-end; gap: var(--space-2); }
+.site-util a { display: inline-flex; align-items: center; min-height: var(--control-h); padding: 0 var(--space-3); font-size: var(--fs-ui); font-weight: var(--fw-medium); text-decoration: none; }
+.site-head { background: var(--color-paper); border-bottom: 1px solid var(--color-divider); }
+.site-head .container { display: flex; align-items: center; justify-content: space-between; gap: var(--space-5); min-height: 72px; }
+.logo { display: inline-flex; align-items: center; gap: var(--space-2); font-size: 1.5rem; font-weight: var(--fw-semibold); letter-spacing: -0.02em; color: var(--color-ink); text-decoration: none; }
+.logo svg { width: 36px; height: 24px; }
+.site-nav { display: flex; align-items: center; gap: var(--space-1); }
+@media (max-width: 900px) { .site-nav .nav-link { display: none; } }
+.hero { background: var(--color-bg); }
+.hero .container { display: grid; gap: var(--space-8); grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); align-items: center; }
+.hero-copy { display: grid; gap: var(--space-5); justify-items: start; }
+.hero-card { display: grid; gap: var(--space-4); }
+.kpis { display: grid; gap: var(--space-4); grid-template-columns: repeat(3, 1fr); }
+.kpis div { display: grid; gap: 2px; }
+.kpis b { font-size: var(--fs-h3); line-height: 1.2; font-weight: var(--fw-semibold); font-variant-numeric: tabular-nums; }
+.band { background: var(--color-bg); }
+.band .container, .site-sec .container { display: grid; gap: var(--space-6); }
+.grid-3 { display: grid; gap: var(--space-5); grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); }
+.grid-4 { display: grid; gap: var(--space-5); grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); }
+.card h3 + p { margin-top: var(--space-2); color: var(--color-muted); }
+.lens { display: grid; gap: var(--space-4); }
+.demo .container { display: grid; gap: var(--space-6); grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); align-items: start; }
+.demo-call { display: grid; gap: var(--space-4); padding: var(--space-6); border-radius: var(--radius-md); background: color-mix(in srgb, var(--color-paper) 8%, var(--color-ink)); }
+.demo-q { display: grid; gap: var(--space-2); margin: 0; padding: 0; list-style: none; }
+.demo-q li { padding: var(--space-3) var(--space-4); border-radius: var(--radius-sm); background: color-mix(in srgb, var(--color-paper) 8%, var(--color-ink)); }
+.price { display: grid; gap: var(--space-4); align-content: start; }
+.price .amt { font-size: var(--fs-h2); line-height: var(--lh-h2); letter-spacing: var(--ls-h2); font-weight: var(--fw-semibold); font-variant-numeric: tabular-nums; }
+.price .amt small { font-size: var(--fs-ui); font-weight: var(--fw-regular); color: var(--color-muted); letter-spacing: 0; }
+.price ul { margin: 0; padding-left: 1.1rem; display: grid; gap: var(--space-2); font-size: var(--fs-ui); color: var(--color-muted); }
+.faq-contact { display: grid; gap: var(--space-8); grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); align-items: start; }
+.form { display: grid; gap: var(--space-4); }
+.form .field { max-width: none; }
+.site-foot { border-top: 1px solid var(--color-divider); }
+.site-foot .container { display: grid; gap: var(--space-6); grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); padding-block: var(--space-7); }
+.site-foot h2 { font-size: var(--fs-caption); line-height: var(--lh-caption); letter-spacing: var(--ls-eyebrow); text-transform: uppercase; color: var(--color-muted); margin-bottom: var(--space-2); }
+.site-foot ul { list-style: none; margin: 0; padding: 0; display: grid; }
+.site-foot a { display: inline-flex; align-items: center; min-height: var(--control-h); color: var(--color-ink); text-decoration: none; font-size: var(--fs-ui); }
+.site-foot a:hover { color: var(--color-primary); text-decoration: underline; }
+
+/* App */
+.app { display: grid; grid-template-columns: 240px minmax(0, 1fr); min-height: 900px; background: var(--color-bg); }
+@media (max-width: 900px) { .app { grid-template-columns: minmax(0, 1fr); } .app-side { display: none; } }
+.app-side { display: flex; flex-direction: column; gap: var(--space-1); padding: var(--space-5) var(--space-3); background: var(--color-paper); border-right: 1px solid var(--color-divider); }
+.app-side .logo { padding: 0 var(--space-3) var(--space-5); font-size: 1.25rem; }
+.side-link { display: flex; align-items: center; gap: var(--space-3); min-height: var(--control-h); padding: 0 var(--space-3); border-radius: var(--radius-sm); color: var(--color-ink); text-decoration: none; font-size: var(--fs-ui); font-weight: var(--fw-medium); transition: background-color var(--dur-fast) var(--ease-standard); }
+.side-link:hover { background: var(--color-tint); color: var(--color-ink); }
+.side-link[aria-current="page"] { background: var(--color-tint); color: var(--color-primary); }
+.side-link svg { width: 18px; height: 18px; }
+.side-foot { margin-top: auto; }
+.app-main { display: grid; align-content: start; min-width: 0; }
+.app-head { display: flex; align-items: center; justify-content: space-between; gap: var(--space-4); min-height: 64px; padding: 0 var(--space-6); background: var(--color-paper); border-bottom: 1px solid var(--color-divider); }
+.app-head .company { font-weight: var(--fw-semibold); color: var(--color-primary); }
+.app-head .tools { display: flex; align-items: center; gap: var(--space-3); }
+.app-head .select { width: auto; min-width: 180px; }
+.avatar { display: inline-grid; place-items: center; width: 36px; height: 36px; border-radius: 50%; background: var(--color-secondary); color: var(--color-ink); font-size: var(--fs-caption); font-weight: var(--fw-semibold); }
+.app-body { display: grid; gap: var(--space-5); padding: var(--space-6); }
+.page-head { display: flex; flex-wrap: wrap; align-items: end; justify-content: space-between; gap: var(--space-4); }
+.page-head h1 { font-size: var(--fs-h3); line-height: var(--lh-h3); letter-spacing: var(--ls-h3); }
+.crumb { font-size: var(--fs-caption); color: var(--color-muted); }
+.tiles { display: grid; gap: var(--space-4); grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); }
+.tile { display: grid; gap: var(--space-1); }
+.tile b { font-size: 2rem; line-height: 1.1; font-weight: var(--fw-semibold); font-variant-numeric: tabular-nums; }
+.tile .delta { font-size: var(--fs-caption); font-weight: var(--fw-semibold); }
+.two { display: grid; gap: var(--space-5); grid-template-columns: minmax(0, 2fr) minmax(280px, 1fr); }
+@media (max-width: 1100px) { .two { grid-template-columns: minmax(0, 1fr); } }
+.chart { display: grid; grid-template-columns: repeat(7, 1fr); gap: var(--space-3); align-items: end; height: 180px; padding-top: var(--space-4); border-bottom: 1px solid var(--color-divider); }
+.chart div { display: flex; flex-direction: column; justify-content: flex-end; gap: 3px; height: 100%; }
+.chart i { display: block; border-radius: 4px 4px 0 0; }
+.chart-x { display: grid; grid-template-columns: repeat(7, 1fr); gap: var(--space-3); text-align: center; }
+.stack { display: grid; gap: var(--space-3); align-content: start; }
+.toolbar { display: flex; flex-wrap: wrap; gap: var(--space-3); align-items: end; }
+.toolbar .field { max-width: 260px; }
+.table-wrap { overflow-x: auto; border: 1px solid var(--color-divider); border-radius: var(--radius-md); background: var(--color-paper); }
+.table-wrap .table { min-width: 760px; }
+.dialog-demo { position: relative; display: grid; place-items: center; padding: var(--space-7) var(--space-4); border-radius: var(--radius-md); background: color-mix(in srgb, var(--color-ink) 55%, transparent); }
+.dialog { width: min(440px, 100%); display: grid; gap: var(--space-4); padding: var(--space-6); border-radius: var(--radius-md); background: var(--color-paper); box-shadow: var(--shadow-4); }
+.dialog .row { display: flex; gap: var(--space-3); justify-content: flex-end; flex-wrap: wrap; }
+.notice svg { width: 20px; height: 20px; }
+@media print { @page { size: 381mm 268mm; margin: 0; } html { -webkit-print-color-adjust: exact; print-color-adjust: exact; } }
+@media print { .proto-switch { display: none; } }
+@media print { .app { display: flex; align-items: flex-start; } .app > .app-side { width: 240px; flex: none; } .app > .app-main { flex: 1; min-width: 0; } }
+@media print { .site-nav .nav-link { display: inline-flex !important; } .app > .app-side { display: flex !important; } }
+@media print { .card { break-inside: avoid; } }
+</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
+<symbol id="i-info" viewBox="0 0 20 20"><circle cx="10" cy="10" r="8.25" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M10 9v5M10 6.2v.1" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></symbol>
+<symbol id="i-check" viewBox="0 0 20 20"><circle cx="10" cy="10" r="8.25" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M6.4 10.3l2.5 2.5 4.7-5" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+<symbol id="i-warn" viewBox="0 0 20 20"><path d="M10 2.8l7.4 13H2.6z" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/><path d="M10 8v4M10 14.2v.1" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></symbol>
+<symbol id="i-x" viewBox="0 0 20 20"><circle cx="10" cy="10" r="8.25" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M7.2 7.2l5.6 5.6M12.8 7.2l-5.6 5.6" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></symbol>
+<symbol id="i-home" viewBox="0 0 20 20"><path d="M3 9l7-6 7 6v8H3z" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/></symbol>
+<symbol id="i-wrench" viewBox="0 0 20 20"><path d="M12.5 3a4 4 0 00-3.8 5.3L3 14l3 3 5.7-5.7A4 4 0 0017 7.5l-2.4 2.4-2.5-2.5L14.5 5A4 4 0 0012.5 3z" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/></symbol>
+<symbol id="i-cal" viewBox="0 0 20 20"><rect x="3" y="4.5" width="14" height="12.5" rx="2" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M3 8.5h14M7 3v3M13 3v3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></symbol>
+<symbol id="i-phone" viewBox="0 0 20 20"><path d="M5 3h3l1.5 4-2 1.3a9 9 0 004.2 4.2L13 10.5l4 1.5v3a2 2 0 01-2 2A12 12 0 013 5a2 2 0 012-2z" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/></symbol>
+<symbol id="i-gear" viewBox="0 0 20 20"><circle cx="10" cy="10" r="2.6" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M10 2.5v2M10 15.5v2M2.5 10h2M15.5 10h2M4.7 4.7l1.4 1.4M13.9 13.9l1.4 1.4M4.7 15.3l1.4-1.4M13.9 6.1l1.4-1.4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></symbol>
+</defs></svg>
+
+<nav class="proto-switch" aria-label="Prototype screens">
+  <a href="#website">Website</a>
+  <a href="#app">Staff app</a>
+</nav>
+
+<!-- ================= WEBSITE ================= -->
+<div class="proto-label" id="website"><span class="eyebrow">Prototype · Website</span></div>
+<div class="proto-frame">
+  <div class="site-util"><div class="container"><a href="#website">Log in</a><a href="#website">Sign up</a></div></div>
+  <header class="site-head">
+    <div class="container">
+      <a class="logo" href="#website">Mobve</a>
+      <nav class="site-nav" aria-label="Main">
+        <a class="nav-link" href="#how">How it helps</a>
+        <a class="nav-link" href="#solutions">Solutions</a>
+        <a class="nav-link" href="#pricing" aria-current="page">Pricing</a>
+        <a class="nav-link" href="#contact">Contact us</a>
+        <a class="btn btn--primary" href="#demo">Try the demo</a>
+      </nav>
+    </div>
+  </header>
+
+  <section class="hero section">
+    <div class="container">
+      <div class="hero-copy">
+        <span class="eyebrow">Voice AI for property operations</span>
+        <h1>Know why residents call. <span style="color:var(--color-primary)">Own what's next.</span></h1>
+        <p class="lead">Every conversation becomes <span class="mark">a clear next step</span>, connected to the property, the issue and the person who owns it.</p>
+        <div class="doc-row" style="display:flex;flex-wrap:wrap;gap:var(--space-3)">
+          <a class="btn btn--primary" href="#contact">Request early access</a>
+          <a class="btn btn--secondary" href="#how">See how it works</a>
+        </div>
+        <span class="caption">English and Spanish · Property-aware intake · Human handoff</span>
+      </div>
+      <div class="card hero-card">
+        <div style="display:flex;justify-content:space-between;align-items:center;gap:var(--space-3)"><b>Operations overview</b><span class="badge badge--primary">Illustrative data</span></div>
+        <div class="kpis">
+          <div><span class="caption">Conversations</span><b>184</b><span class="caption">This week</span></div>
+          <div><span class="caption">First-contact resolution</span><b>71%</b><span class="caption">Qualifying cohort</span></div>
+          <div><span class="caption">Open follow-ups</span><b>7</b><span class="caption">With owners</span></div>
+        </div>
+        <div class="notice notice--success" role="status"><svg aria-hidden="true"><use href="#i-check"/></svg><div><strong>Leak in unit 202 resolved</strong><span class="notice__body">Closed by Ariel Soto, 2 hours after the call.</span></div></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="band section" id="how">
+    <div class="container">
+      <div style="display:grid;gap:var(--space-3)"><span class="eyebrow">Real places. Everyday responsibilities.</span><h2>A property is more than a dashboard.</h2></div>
+      <div class="tabs" role="tablist" aria-label="Scenario">
+        <button class="tab" role="tab" type="button" aria-selected="true" id="s1">The resident</button>
+        <button class="tab" role="tab" type="button" aria-selected="false" id="s2">The team</button>
+        <button class="tab" role="tab" type="button" aria-selected="false" id="s3">The manager</button>
+      </div>
+      <div class="grid-3">
+        <div class="card"><h3>"I called about this last week."</h3><p>A returning issue comes with its history, so the resident does not have to tell it again.</p></div>
+        <div class="card"><h3>"What do I need before I go?"</h3><p>Location, access permission and the issue travel with the request.</p></div>
+        <div class="card card--featured"><span class="badge badge--secondary">Most asked</span><h3 style="margin-top:var(--space-3)">"Where is the work stuck?"</h3><p>Open follow-ups and repeated requests across the portfolio, in one view.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section on-dark demo" id="demo">
+    <div class="container">
+      <div style="display:grid;gap:var(--space-4)">
+        <span class="eyebrow">A small property. A real conversation.</span>
+        <h2>Meet Jenny. There when your team can't be.</h2>
+        <p class="lead">Jenny answers routine questions and captures requests, then hands anything that needs a person to your team.</p>
+        <ul class="demo-q">
+          <li>How much is a two-bedroom apartment?</li>
+          <li>Do you have a package for unit 208?</li>
+          <li>Are pets allowed, and is there a monthly fee?</li>
+        </ul>
+      </div>
+      <div class="demo-call">
+        <span class="caption">Jenny · Live voice</span>
+        <h3>One minute. Your questions.</h3>
+        <div class="notice notice--warning" role="status"><svg aria-hidden="true"><use href="#i-warn"/></svg><div><strong>The live demo is not open yet</strong><span class="notice__body">Request early access and we will tell you when it opens.</span></div></div>
+        <div style="display:flex;flex-wrap:wrap;gap:var(--space-3)">
+          <button class="btn btn--inverse" type="button" disabled>Call Jenny</button>
+          <a class="btn btn--inverse" href="#contact">Request early access</a>
+        </div>
+        <a href="#website">Read the demo privacy notice</a>
+      </div>
+    </div>
+  </section>
+
+  <section class="section site-sec" id="solutions">
+    <div class="container">
+      <div style="display:grid;gap:var(--space-3)"><span class="eyebrow">Different portfolios</span><h2>Built around the work, not one property type.</h2></div>
+      <div class="grid-4">
+        <a class="card card--interactive" href="#solutions"><h3>Residential</h3><p>Resident questions, leasing inquiries and repair requests.</p></a>
+        <a class="card card--interactive" href="#solutions"><h3>Affordable housing</h3><p>Application guidance routed to qualified staff.</p></a>
+        <a class="card card--interactive" href="#solutions"><h3>Student housing</h3><p>Room questions, move-in details and maintenance.</p></a>
+        <a class="card card--interactive" href="#solutions"><h3>Senior living</h3><p>Leasing information and maintenance intake.</p></a>
+      </div>
+    </div>
+  </section>
+
+  <section class="band section" id="pricing">
+    <div class="container">
+      <div style="display:grid;gap:var(--space-3)"><span class="eyebrow">Plans</span><h2>A plan for the operation you run.</h2></div>
+      <div class="grid-4">
+        <div class="card price"><h3>Essentials</h3><div class="amt">$99 <small>/ month</small></div><span class="caption">Up to 100 units · 5 staff</span><ul><li>Staff workspace</li><li>Operations dashboards</li><li>Request queues</li></ul><a class="btn btn--secondary" href="#contact">Choose Essentials</a></div>
+        <div class="card card--featured price"><span class="badge badge--secondary" style="width:fit-content">Recommended</span><h3>AI Operations</h3><div class="amt">$349 <small>/ month</small></div><span class="caption">Up to 300 units · 15 staff</span><ul><li>24/7 AI answering</li><li>500 AI minutes included</li><li>Call summaries and transcripts</li></ul><a class="btn btn--primary" href="#contact">Choose AI Operations</a></div>
+        <div class="card price"><h3>Portfolio</h3><div class="amt">$999 <small>/ month</small></div><span class="caption">Up to 1,000 units · 50 staff</span><ul><li>1,500 pooled AI minutes</li><li>3 departmental agents</li><li>Reporting</li></ul><a class="btn btn--secondary" href="#contact">Choose Portfolio</a></div>
+        <div class="card price"><h3>Enterprise</h3><div class="amt">Custom</div><span class="caption">Larger or complex portfolios</span><ul><li>Agreed capacity</li><li>Custom workflows</li><li>Rollout support</li></ul><a class="btn btn--ghost" href="#contact">Talk to us</a></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section site-sec" id="contact">
+    <div class="container faq-contact">
+      <div style="display:grid;gap:var(--space-5)">
+        <div style="display:grid;gap:var(--space-3)"><span class="eyebrow">Good questions</span><h2>Before you take the next step.</h2></div>
+        <div class="accordion">
+          <details open><summary>What can I try in the live demo?</summary><p>A one-minute call with Jenny about a fictional property.</p></details>
+          <details><summary>Does Mobve replace my management software?</summary><p>No. It connects conversations to the systems you already use.</p></details>
+          <details><summary>How much does a pilot cost?</summary><p>Pricing is confirmed per pilot.</p></details>
+        </div>
+      </div>
+      <form class="card form" id="cf" novalidate>
+        <h3>Talk to the team</h3>
+        <div class="field"><label for="n" class="req">Name</label><input class="input" id="n" type="text" autocomplete="name" value="Ariel Soto"></div>
+        <div class="field"><label for="e" class="req">Work email</label><input class="input" id="e" type="email" autocomplete="email" value="ariel@" aria-invalid="true" aria-describedby="e-err"><span class="field__error" id="e-err"><svg width="16" height="16" aria-hidden="true" style="flex:none"><use href="#i-x"/></svg>Enter an email like name@company.com.</span></div>
+        <div class="field"><label for="p">Portfolio size</label><select class="select" id="p"><option>Up to 300 units</option><option>300 to 1,000 units</option><option>More than 1,000 units</option></select></div>
+        <div class="field"><label for="m">What would you like to discuss?</label><textarea class="textarea" id="m" placeholder="Calls, properties, systems you use"></textarea><span class="field__hint">Optional. Up to 500 characters.</span></div>
+        <label class="check"><input type="checkbox" checked> It is OK for Mobve to contact me about this request.</label>
+        <div style="display:flex;gap:var(--space-3);flex-wrap:wrap"><button class="btn btn--primary" type="submit">Send request</button><button class="btn btn--ghost" type="reset">Clear</button></div>
+        <div id="ok" hidden><div class="notice notice--success" role="status"><svg aria-hidden="true"><use href="#i-check"/></svg><div><strong>Request sent</strong><span class="notice__body">We will reply by email within one business day.</span></div></div></div>
+      </form>
+    </div>
+  </section>
+
+  <footer class="site-foot">
+    <div class="container">
+      <div style="display:grid;gap:var(--space-3);align-content:start"><a class="logo" href="#website" style="min-height:auto">Mobve</a><span class="caption">Every conversation. A clear next step.</span></div>
+      <div><h2>Product</h2><ul><li><a href="#demo">Try the demo</a></li><li><a href="#solutions">Solutions</a></li><li><a href="#pricing">Pricing</a></li></ul></div>
+      <div><h2>Company</h2><ul><li><a href="#website">About</a></li><li><a href="#contact">Contact</a></li></ul></div>
+      <div><h2>Trust</h2><ul><li><a href="#website">Security</a></li><li><a href="#website">Privacy</a></li><li><a href="#website">Terms</a></li></ul></div>
+    </div>
+  </footer>
+</div>
+
+<!-- ================= APP ================= -->
+<div class="proto-label" id="app"><span class="eyebrow">Prototype · Staff app</span></div>
+<div class="proto-frame app">
+  <aside class="app-side" aria-label="Workspace">
+    <a class="logo" href="#app">Mobve</a>
+    <a class="side-link" href="#app"><svg aria-hidden="true"><use href="#i-home"/></svg>Dashboard</a>
+    <a class="side-link" href="#app" aria-current="page"><svg aria-hidden="true"><use href="#i-wrench"/></svg>Maintenance requests</a>
+    <a class="side-link" href="#app"><svg aria-hidden="true"><use href="#i-cal"/></svg>Appointments</a>
+    <a class="side-link" href="#app"><svg aria-hidden="true"><use href="#i-phone"/></svg>Call log</a>
+    <a class="side-link" href="#app"><svg aria-hidden="true"><use href="#i-gear"/></svg>Settings</a>
+    <div class="side-foot"><span class="caption" style="padding:0 var(--space-3)">Your properties. One clear picture.</span></div>
+  </aside>
+  <div class="app-main">
+    <header class="app-head">
+      <span class="company">Jackson Properties LLC</span>
+      <div class="tools">
+        <label class="caption" for="prop" style="position:absolute;left:-9999px">Property</label>
+        <select class="select" id="prop"><option>All properties</option><option>Maple Grove Commons</option><option>Riverwalk Court</option></select>
+        <button class="btn btn--secondary btn--compact" type="button">Emma AI</button>
+        <span class="avatar" aria-label="Ariel Soto">AS</span>
+      </div>
+    </header>
+
+    <div class="app-body">
+      <div class="page-head">
+        <div style="display:grid;gap:var(--space-1)"><span class="crumb">All properties › Maintenance requests</span><h1>Maintenance requests</h1><span class="caption">Every request, who is assigned and what is stuck.</span></div>
+        <div style="display:flex;gap:var(--space-3);flex-wrap:wrap"><button class="btn btn--ghost" type="button">Export CSV</button><button class="btn btn--primary" type="button">New request</button></div>
+      </div>
+
+      <div class="notice notice--info" role="status"><svg aria-hidden="true"><use href="#i-info"/></svg><div><strong>Emma answered 12 calls overnight</strong><span class="notice__body">3 became maintenance requests. Review them below.</span></div></div>
+
+      <div class="tiles">
+        <div class="card tile"><span class="caption">Open</span><b>7</b><span class="badge badge--primary" style="width:fit-content">0 emergency</span></div>
+        <div class="card tile"><span class="caption">Unassigned</span><b>3</b><span class="badge badge--warning" style="width:fit-content">Oldest 49 days</span></div>
+        <div class="card tile"><span class="caption">Overdue</span><b>1</b><span class="badge badge--danger" style="width:fit-content">Past SLA</span></div>
+        <div class="card tile"><span class="caption">Completed this week</span><b>10</b><span class="badge badge--success" style="width:fit-content">Up 4 from last week</span></div>
+      </div>
+
+      <div class="card stack">
+        <div style="display:flex;justify-content:space-between;align-items:center;gap:var(--space-3);flex-wrap:wrap"><h3>Call volume and conversation effort</h3><div class="legend"><span class="legend__item">Current</span><span class="legend__item legend__item--line">Average call duration</span></div></div>
+        <svg viewBox="0 0 700 204" role="img" aria-label="Calls per day as bars and average call duration as a dashed line, last 7 days" style="width:100%;height:auto">
+          <line x1="0" y1="170" x2="700" y2="170" style="stroke:var(--color-divider);stroke-width:1"/>
+          <g style="fill:var(--color-primary)">
+            <rect x="30" y="80" width="60" height="90" rx="4"/><rect x="130" y="100" width="60" height="70" rx="4"/><rect x="230" y="50" width="60" height="120" rx="4"/><rect x="330" y="90" width="60" height="80" rx="4"/><rect x="430" y="60" width="60" height="110" rx="4"/><rect x="530" y="130" width="60" height="40" rx="4"/><rect x="630" y="115" width="60" height="55" rx="4"/>
+          </g>
+          <polyline points="60,60 160,72 260,40 360,66 460,48 560,95 660,84" style="fill:none;stroke:var(--color-muted);stroke-width:2.5;stroke-dasharray:7 6"/>
+          <g style="fill:var(--color-paper);stroke:var(--color-muted);stroke-width:2.5"><circle cx="60" cy="60" r="5"/><circle cx="160" cy="72" r="5"/><circle cx="260" cy="40" r="5"/><circle cx="360" cy="66" r="5"/><circle cx="460" cy="48" r="5"/><circle cx="560" cy="95" r="5"/><circle cx="660" cy="84" r="5"/></g>
+          <g style="fill:var(--color-muted);font-size:13px;font-family:var(--font-sans)"><text x="60" y="196" text-anchor="middle">Mon</text><text x="160" y="196" text-anchor="middle">Tue</text><text x="260" y="196" text-anchor="middle">Wed</text><text x="360" y="196" text-anchor="middle">Thu</text><text x="460" y="196" text-anchor="middle">Fri</text><text x="560" y="196" text-anchor="middle">Sat</text><text x="660" y="196" text-anchor="middle">Sun</text></g>
+        </svg>
+      </div>
+
+      <div class="two">
+        <div class="card stack">
+          <div style="display:flex;justify-content:space-between;align-items:center;gap:var(--space-3);flex-wrap:wrap"><h3>Received and completed</h3><div class="legend"><span class="legend__item">Received</span><span class="legend__item legend__item--success">Completed</span></div></div>
+          <div class="chart" role="img" aria-label="Requests received and completed per day, last 7 days">
+            <div><i style="height:50%;background:var(--color-primary)"></i><i style="height:30%;background:var(--color-success)"></i></div>
+            <div><i style="height:35%;background:var(--color-primary)"></i><i style="height:40%;background:var(--color-success)"></i></div>
+            <div><i style="height:65%;background:var(--color-primary)"></i><i style="height:20%;background:var(--color-success)"></i></div>
+            <div><i style="height:40%;background:var(--color-primary)"></i><i style="height:35%;background:var(--color-success)"></i></div>
+            <div><i style="height:55%;background:var(--color-primary)"></i><i style="height:30%;background:var(--color-success)"></i></div>
+            <div><i style="height:20%;background:var(--color-primary)"></i><i style="height:15%;background:var(--color-success)"></i></div>
+            <div><i style="height:30%;background:var(--color-primary)"></i><i style="height:25%;background:var(--color-success)"></i></div>
+          </div>
+          <div class="chart-x caption"><span>Mon</span><span>Tue</span><span>Wed</span><span>Thu</span><span>Fri</span><span>Sat</span><span>Sun</span></div>
+        </div>
+        <div class="card stack">
+          <h3>Attention required</h3>
+          <div class="notice notice--danger" role="alert"><svg aria-hidden="true"><use href="#i-x"/></svg><div><strong>Resident requests could not load</strong><span class="notice__body">Your records have not changed. Try again in a moment.</span></div></div>
+          <div class="notice notice--warning" role="status"><svg aria-hidden="true"><use href="#i-warn"/></svg><div><strong>Emergency coverage incomplete</strong><span class="notice__body">Add a backup contact for the next 14 days.</span></div></div>
+          <button class="btn btn--secondary" type="button">Open settings</button>
+        </div>
+      </div>
+
+      <div class="card stack">
+        <div style="display:flex;justify-content:space-between;align-items:center;gap:var(--space-3);flex-wrap:wrap"><h3>This week's appointments</h3><div style="display:flex;gap:var(--space-2);flex-wrap:wrap"><span class="cat cat--tour">Tour</span><span class="cat cat--lease">Lease</span><span class="cat cat--inspection">Inspection</span><span class="cat cat--billing">Billing</span><span class="cat cat--maintenance">Maintenance</span></div></div>
+        <div style="display:grid;gap:var(--space-3);grid-template-columns:repeat(auto-fit,minmax(150px,1fr))">
+          <div class="stack"><span class="caption">Mon 2</span><div class="event event--tour"><b>10:00 Tour</b><span>Raicelle · Maple Grove</span></div><div class="event event--maintenance"><b>15:30 Maintenance</b><span>Unit 202 · Maple Grove</span></div></div>
+          <div class="stack"><span class="caption">Tue 3</span><div class="event event--lease"><b>11:30 Lease signing</b><span>Unit 208 · Riverwalk</span></div></div>
+          <div class="stack"><span class="caption">Wed 4</span><div class="event event--inspection"><b>09:00 Move-in inspection</b><span>Unit 104 · Juno Village</span></div><div class="event event--tour"><b>13:00 Second tour</b><span>Unit 410 · Westhaven</span></div></div>
+          <div class="stack"><span class="caption">Thu 5</span><div class="event event--billing"><b>15:00 Billing</b><span>Unit 702 · Riverwalk</span></div></div>
+          <div class="stack"><span class="caption">Fri 6</span><div class="event event--maintenance"><b>08:30 Maintenance</b><span>Unit 14 · Juno Village</span></div><div class="event event--lease"><b>12:00 Renewal meeting</b><span>Unit 305 · Brookfield</span></div></div>
+        </div>
+      </div>
+
+      <div class="card stack">
+        <div class="toolbar">
+          <div class="field"><label for="q">Search</label><input class="input" id="q" type="search" placeholder="Request, unit or resident"></div>
+          <div class="field"><label for="st">Stage</label><select class="select" id="st"><option>Open</option><option>All stages</option></select></div>
+          <div class="tabs" role="tablist" aria-label="View" style="border-bottom:0">
+            <button class="tab" role="tab" type="button" aria-selected="true" id="v1">List</button>
+            <button class="tab" role="tab" type="button" aria-selected="false" id="v2">Board</button>
+          </div>
+        </div>
+        <div class="table-wrap" tabindex="0" role="region" aria-label="Maintenance requests">
+          <table class="table">
+            <thead><tr><th>Request</th><th>Property</th><th>Issue</th><th>Priority</th><th>Stage</th><th>Assignee</th><th></th></tr></thead>
+            <tbody>
+              <tr><td>CALL-0A8DB8A5</td><td>Maple Grove Commons · 202</td><td>Toilet leaking</td><td><span class="badge">Normal</span></td><td><span class="badge badge--primary">Assigned</span></td><td>Ariel Soto</td><td><a href="#app">View</a></td></tr>
+              <tr><td>CALL-BE001E08</td><td>Maple Grove Commons</td><td>Door does not lock</td><td><span class="badge badge--danger">Urgent</span></td><td><span class="badge badge--warning">Unassigned</span></td><td class="caption">Nobody yet</td><td><a href="#app">View</a></td></tr>
+              <tr><td>CALL-DBF0B3FB</td><td>Riverwalk Court · 702</td><td>Refrigerator not working</td><td><span class="badge">Normal</span></td><td><span class="badge badge--primary">In progress</span></td><td>Ariel Soto</td><td><a href="#app">View</a></td></tr>
+              <tr><td>CALL-77C1A920</td><td>Juno Village · 14</td><td>Light fixture replaced</td><td><span class="badge">Low</span></td><td><span class="badge badge--success">Completed</span></td><td>Sam Lee</td><td><a href="#app">View</a></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="two">
+        <div class="empty">
+          <h3>No calls match these filters</h3>
+          <p>Try a different date range or property. New calls appear after Mobve records them.</p>
+          <button class="btn btn--secondary" type="button">Reset filters</button>
+        </div>
+        <div class="dialog-demo">
+          <div class="dialog" role="dialog" aria-modal="false" aria-labelledby="dlg-t">
+            <h3 id="dlg-t">Cancel this request?</h3>
+            <p class="caption" style="font-size:var(--fs-ui)">CALL-BE001E08 will be closed and the resident will not be contacted again.</p>
+            <div class="row"><button class="btn btn--ghost" type="button">Keep request</button><button class="btn btn--danger" type="button">Cancel request</button></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+(function () {
+  document.querySelectorAll('[role="tablist"]').forEach(function (list) {
+    var tabs = list.querySelectorAll('[role="tab"]');
+    tabs.forEach(function (t) {
+      t.addEventListener('click', function () { tabs.forEach(function (o) { o.setAttribute('aria-selected', String(o === t)); }); });
+    });
+  });
+  var form = document.getElementById('cf');
+  form.addEventListener('submit', function (e) {
+    e.preventDefault();
+    var email = document.getElementById('e'), err = document.getElementById('e-err');
+    var bad = !/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email.value.trim());
+    email.setAttribute('aria-invalid', bad ? 'true' : 'false');
+    err.hidden = !bad;
+    document.getElementById('ok').hidden = bad;
+    if (bad) email.focus();
+  });
+  form.addEventListener('reset', function () {
+    setTimeout(function () { document.getElementById('e').setAttribute('aria-invalid', 'false'); document.getElementById('e-err').hidden = true; document.getElementById('ok').hidden = true; });
+  });
+})();
+</script>
+</body>
+</html>

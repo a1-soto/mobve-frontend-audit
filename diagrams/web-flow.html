@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Mobve web flow: mobve.com</title>
+<style>
+body { margin: 0; font-family: Arial, Helvetica, sans-serif; color: #101b2b; background: #ffffff; }
+header { padding: 24px 32px 8px; }
+h1 { margin: 0 0 6px; font-size: 26px; }
+p { margin: 0 0 12px; color: #536173; font-size: 14px; }
+.legend { display: flex; flex-wrap: wrap; gap: 8px 20px; font-size: 13px; }
+.legend span { display: inline-flex; align-items: center; gap: 6px; }
+.legend i { width: 14px; height: 14px; border-radius: 3px; display: inline-block; }
+main { padding: 8px 32px 32px; }
+.mermaid svg { max-width: 100% !important; height: auto; }
+@page { size: 594mm 420mm; margin: 10mm; }
+@media print { html { -webkit-print-color-adjust: exact; print-color-adjust: exact; } }
+</style>
+</head>
+<body>
+<header>
+<h1>Mobve web flow: mobve.com</h1>
+<p>Audit of 2026-11-03. Public site and exits to the app (staging).</p>
+<div class="legend"><span><i style="background:#B3E65F;border:1px solid #6E9A24"></i>Entry point</span><span><i style="background:#FFE86D;border:1px solid #A28E26"></i>Page or section (works)</span><span><i style="background:#9CE6FF;border:1px solid #2C97BB"></i>Interactive element</span><span><i style="background:#FFB575;border:1px solid #CC7830"></i>Problem or launch blocker</span><span><i style="background:#DDDDD8;border:1px solid #8A8A7E"></i>Outside this site (app)</span></div>
+</header>
+<main><pre class="mermaid">
+flowchart LR
+    classDef start fill:#B3E65F,stroke:#6E9A24,color:#2F440B
+    classDef ok fill:#FFE86D,stroke:#A28E26,color:#574900
+    classDef ui fill:#9CE6FF,stroke:#2C97BB,color:#1C4657
+    classDef bad fill:#FFB575,stroke:#CC7830,color:#542700
+    classDef ext fill:#DDDDD8,stroke:#8A8A7E,color:#434339
+    classDef skip fill:#DDDDD8,stroke:#8A8A7E,color:#434339
+    home([&quot;Home mobve.com&quot;]):::start
+    home --&gt; nav[&quot;Top navigation&quot;]:::ui
+    home --&gt; hero[&quot;Hero: CTA and See how it works&quot;]:::ok
+    home --&gt; lens[&quot;How it helps: 3 tabs&quot;]:::ok
+    home --&gt; demo[&quot;Demo section: Call Jenny EN or ES&quot;]:::ui
+    home --&gt; port[&quot;Solutions: 8 property cards, not clickable&quot;]:::ok
+    home --&gt; chat[&quot;Chat widget: Ask Mobve&quot;]:::ui
+    home --&gt; pricing[&quot;Pricing section: 4 plans&quot;]:::ok
+    home --&gt; faq[&quot;FAQ: 4 questions&quot;]:::ok
+    home --&gt; footer[&quot;Footer&quot;]:::ui
+    home --&gt; auth[&quot;Header: Log in and Sign up&quot;]:::ui
+    nav --&gt; anchors[&quot;Anchors: how it helps, solutions, pricing, demo&quot;]:::ok
+    nav --&gt; security[&quot;security.html (Trust)&quot;]:::ok
+    nav --&gt; contact[&quot;contact.html: no form, no email, no phone&quot;]:::bad
+    hero --&gt; demo
+    lens --&gt; demo
+    demo --&gt; demodown[&quot;Call Now: status API answers 401 or 503. Live demo unavailable&quot;]:::bad
+    demo --&gt; privacy[&quot;privacy.html: draft for legal review&quot;]:::bad
+    chat --&gt; chatdown[&quot;Chat start fails: Chat is unavailable right now&quot;]:::bad
+    chatdown --&gt; contact
+    chat --&gt; leadform[&quot;Request team contact form: unreachable without a chat session&quot;]:::bad
+    chatdown --&gt; leadform
+    pricing --&gt; pricingpage[&quot;pricing.html: Owner review, not an approved offer&quot;]:::bad
+    pricing --&gt; register[&quot;App: /register?plan=...&quot;]:::ext
+    faq --&gt; contact
+    footer --&gt; inner[&quot;Inner pages: security, privacy, terms, about, brand, integrations, accessibility, credits&quot;]:::ok
+    footer --&gt; pricingpage
+    footer --&gt; contact
+    contact --&gt; early[&quot;Button: Request early access on Mobve.com&quot;]:::ui
+    inner --&gt; early
+    early --&gt; waitlist[&quot;mobve.com/#waitlist: section does not exist&quot;]:::bad
+    waitlist --&gt; dead[&quot;Dead end: lands on top of the home. No working contact path&quot;]:::bad
+    inner --&gt; banner[&quot;Top banner: Private preview, Draft material. Link Review notes&quot;]:::bad
+    pricingpage --&gt; banner
+    contact --&gt; banner
+    banner --&gt; review[&quot;review.html: internal implementation checklist&quot;]:::bad
+    auth --&gt; login[&quot;App: /login&quot;]:::ext
+    auth --&gt; register
+    login --&gt; forgot[&quot;App: forgot-password, register, terms, privacy, dmca&quot;]:::ext
+    register --&gt; stg[&quot;Staging host: mobve-telnyx-staging...ondigitalocean.app&quot;]:::bad
+    login --&gt; stg
+</pre></main>
+<script src="https://cdn.jsdelivr.net/npm/mermaid@10.9.1/dist/mermaid.min.js"></script>
+<script>mermaid.initialize({ startOnLoad: true, securityLevel: "strict", flowchart: { useMaxWidth: true, htmlLabels: true } });</script>
+</body>
+</html>

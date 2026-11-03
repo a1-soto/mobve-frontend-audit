@@ -1,0 +1,1195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Mobve Design System</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&amp;family=JetBrains+Mono:wght@400;500&amp;display=swap" rel="stylesheet">
+<style>
+/* Layout idea: a quiet specification sheet. Left index, one column of specimens, every value shown next to its sample. */
+/* Mobve design system, proposal v1 (2026-11-03)
+   Source of values: measured on mobve.com and the staff app, brand.html colors kept.
+   One token layer for the website and the app. */
+
+/* Font: self-host Inter Variable (the site CSP is default-src 'self', so a Google Fonts link would be blocked).
+@font-face {
+  font-family: "Inter Variable";
+  src: url("/assets/fonts/InterVariable.woff2") format("woff2");
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+}
+*/
+
+:root {
+  /* Color, chosen: base colors (route A). Muted is the gray for secondary text and control borders; bg is the page background under white surfaces, as in the current app */
+  --color-primary: #0b63ce;
+  --color-secondary: #ffc845;
+  --color-ink: #101b2b;
+  --color-paper: #ffffff;
+  --color-muted: #536173;
+  --color-bg: #fafafa;
+
+  /* Color, chosen: semantic signals from traffic lights (green, amber, red) and a dark text in the same hue */
+  --color-success: #03a14a;
+  --color-success-text: #09672e;
+  --color-warning: #f7a30d;
+  --color-warning-text: #7d5002;
+  --color-danger: #d73431;
+  --color-danger-text: #a12623;
+
+  /* Color, chosen: appointment categories. Hues kept clear of brand and semantic colors, at least 0.12 apart */
+  --color-cat-tour: #0891c9;
+  --color-cat-lease: #794db6;
+  --color-cat-inspection: #6a7a31;
+  --color-cat-billing: #b55fba;
+  --color-cat-maintenance: #864821;
+
+  /* Color, calculated from the above, not chosen */
+  --color-divider: color-mix(in srgb, var(--color-muted) 20%, var(--color-paper));
+  --color-tint: color-mix(in srgb, var(--color-primary) 10%, var(--color-paper));
+  --color-tint-strong: color-mix(in srgb, var(--color-primary) 24%, var(--color-paper));
+  --color-primary-hover: color-mix(in srgb, var(--color-primary), black 22%);
+  --color-primary-active: color-mix(in srgb, var(--color-primary), black 44%);
+  --color-on-dark-muted: color-mix(in srgb, var(--color-paper) 72%, var(--color-ink));
+  --color-success-tint: color-mix(in srgb, var(--color-success) 12%, var(--color-paper));
+  --color-warning-tint: color-mix(in srgb, var(--color-warning) 16%, var(--color-paper));
+  --color-danger-tint: color-mix(in srgb, var(--color-danger) 10%, var(--color-paper));
+  --color-danger-hover: color-mix(in srgb, var(--color-danger), black 22%);
+  --color-danger-active: color-mix(in srgb, var(--color-danger), black 44%);
+
+  /* Type */
+  --font-sans: "Inter Variable", "Inter", system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+  --fw-regular: 400;
+  --fw-medium: 500;
+  --fw-semibold: 600;
+  --fs-caption: 0.75rem;
+  --fs-ui: 0.875rem;
+  --fs-button: 0.9375rem;
+  --fs-body: 1rem;
+  --fs-lead: 1.25rem;
+  --fs-h3: 1.5rem;
+  --fs-h2: clamp(2rem, 1.5rem + 2vw, 2.75rem);
+  --fs-h1: clamp(2.5rem, 1.75rem + 3.2vw, 4rem);
+  --lh-h1: 1.08;
+  --lh-h2: 1.12;
+  --lh-h3: 1.25;
+  --lh-lead: 1.45;
+  --lh-body: 1.5;
+  --lh-ui: 1.4;
+  --lh-caption: 1.4;
+  --ls-h1: -0.02em;
+  --ls-h2: -0.02em;
+  --ls-h3: -0.01em;
+  --ls-eyebrow: 0.08em;
+  --measure: 65ch;
+
+  /* Space: 4 px base */
+  --space-1: 0.25rem;
+  --space-2: 0.5rem;
+  --space-3: 0.75rem;
+  --space-4: 1rem;
+  --space-5: 1.5rem;
+  --space-6: 2rem;
+  --space-7: 3rem;
+  --space-8: 4rem;
+  --space-9: 6rem;
+
+  /* Layout */
+  --container: 1240px;
+  --gutter: clamp(1rem, 4vw, 2rem);
+  --section-y: clamp(3rem, 2rem + 4vw, 5rem);
+
+  /* Shape */
+  --radius-sm: 8px;
+  --radius-md: 14px;
+  --radius-pill: 999px;
+
+  /* Elevation */
+  --shadow-1: 0 1px 2px rgba(16, 27, 43, 0.06), 0 1px 1px rgba(16, 27, 43, 0.04);
+  --shadow-2: 0 4px 12px rgba(16, 27, 43, 0.08);
+  --shadow-3: 0 12px 32px rgba(16, 27, 43, 0.12);
+  --shadow-press: inset 0 2px 4px rgba(16, 27, 43, 0.28);
+  --shadow-4: 0 24px 64px rgba(16, 27, 43, 0.2);
+
+  /* Motion */
+  --dur-instant: 100ms;
+  --dur-fast: 200ms;
+  --dur-base: 300ms;
+  --dur-slow: 500ms;
+  --ease-standard: cubic-bezier(0.4, 0, 0.2, 1);
+  --ease-emphasized: cubic-bezier(0.2, 0.6, 0.3, 1);
+
+  /* Controls */
+  --control-h: 44px;
+  --control-h-compact: 36px;
+  --disabled-opacity: 0.38;
+}
+
+/* Breakpoints (media queries cannot read variables): 480, 768, 1024, 1280 px */
+
+/* Base */
+html { font-family: var(--font-sans); font-size: 100%; color: var(--color-ink); background: var(--color-bg); -webkit-text-size-adjust: 100%; }
+body { margin: 0; font-size: var(--fs-body); line-height: var(--lh-body); font-weight: var(--fw-regular); font-optical-sizing: auto; }
+h1, h2, h3 { margin: 0; font-weight: var(--fw-semibold); text-wrap: balance; }
+h1 { font-size: var(--fs-h1); line-height: var(--lh-h1); letter-spacing: var(--ls-h1); }
+h2 { font-size: var(--fs-h2); line-height: var(--lh-h2); letter-spacing: var(--ls-h2); }
+h3 { font-size: var(--fs-h3); line-height: var(--lh-h3); letter-spacing: var(--ls-h3); }
+p { max-width: var(--measure); margin: 0; }
+.lead { font-size: var(--fs-lead); line-height: var(--lh-lead); color: var(--color-muted); }
+.ui { font-size: var(--fs-ui); line-height: var(--lh-ui); font-weight: var(--fw-medium); }
+.caption { font-size: var(--fs-caption); line-height: var(--lh-caption); color: var(--color-muted); }
+.eyebrow { font-size: var(--fs-caption); line-height: var(--lh-caption); font-weight: var(--fw-semibold); letter-spacing: var(--ls-eyebrow); text-transform: uppercase; color: var(--color-primary); }
+a { color: var(--color-primary); text-underline-offset: 0.2em; transition: color var(--dur-fast) var(--ease-standard); }
+a:hover { color: var(--color-primary-hover); }
+:focus-visible { outline: 2px solid var(--color-primary); outline-offset: 2px; }
+.on-dark :focus-visible { outline-color: var(--color-secondary); }
+.on-dark { background: var(--color-ink); color: var(--color-paper); }
+.on-dark .lead, .on-dark .caption { color: var(--color-on-dark-muted); }
+.on-dark .eyebrow { color: var(--color-secondary); }
+.on-dark a:not(.btn) { color: var(--color-secondary); }
+.container { max-width: var(--container); margin-inline: auto; padding-inline: var(--gutter); }
+.section { padding-block: var(--section-y); }
+.section--alt { background: var(--color-paper); }
+
+/* Navigation link */
+.nav-link { display: inline-flex; align-items: center; min-height: var(--control-h); padding: 0 var(--space-3); color: var(--color-ink); font-size: var(--fs-ui); font-weight: var(--fw-medium); text-decoration: none; box-shadow: inset 0 -2px 0 transparent; transition: color var(--dur-fast) var(--ease-standard), box-shadow var(--dur-fast) var(--ease-standard); }
+.nav-link:hover, .nav-link.is-hover { color: var(--color-primary); box-shadow: inset 0 -2px 0 var(--color-primary); }
+.nav-link[aria-current="page"] { color: var(--color-primary); box-shadow: inset 0 -2px 0 var(--color-primary); }
+
+/* Button */
+.btn { display: inline-flex; align-items: center; justify-content: center; gap: var(--space-2); min-height: var(--control-h); padding: 0 var(--space-5); border: 1px solid transparent; border-radius: var(--radius-sm); font: inherit; font-size: var(--fs-button); font-weight: var(--fw-semibold); line-height: 1; text-decoration: none; cursor: pointer; transition: background-color var(--dur-fast) var(--ease-standard), border-color var(--dur-fast) var(--ease-standard), color var(--dur-fast) var(--ease-standard), transform var(--dur-fast) var(--ease-standard), box-shadow var(--dur-fast) var(--ease-standard); }
+.btn--primary { background: var(--color-primary); color: var(--color-paper); }
+.btn--primary:hover, .btn--primary.is-hover { background: var(--color-primary-hover); color: var(--color-paper); transform: translateY(-1px); box-shadow: var(--shadow-2); }
+.btn--primary:active, .btn--primary.is-active { background: var(--color-primary-active); transform: translateY(1px); box-shadow: var(--shadow-press); }
+.btn--secondary { background: var(--color-paper); color: var(--color-primary); border-color: var(--color-primary); }
+.btn--secondary:hover, .btn--secondary.is-hover { background: var(--color-tint); color: var(--color-primary-hover); border-color: var(--color-primary-hover); transform: translateY(-1px); box-shadow: var(--shadow-2); }
+.btn--secondary:active, .btn--secondary.is-active { background: var(--color-tint-strong); color: var(--color-primary-hover); border-color: var(--color-primary-active); transform: translateY(1px); box-shadow: none; }
+.btn--ghost { background: transparent; color: var(--color-primary); }
+.btn--ghost:hover, .btn--ghost.is-hover { background: var(--color-tint); color: var(--color-primary-hover); }
+.btn--ghost:active, .btn--ghost.is-active { background: var(--color-tint-strong); color: var(--color-primary-hover); transform: translateY(1px); }
+.btn--danger { background: var(--color-danger); color: var(--color-paper); }
+.btn--danger:hover, .btn--danger.is-hover { background: var(--color-danger-hover); color: var(--color-paper); transform: translateY(-1px); box-shadow: var(--shadow-2); }
+.btn--danger:active, .btn--danger.is-active { background: var(--color-danger-active); transform: translateY(1px); box-shadow: var(--shadow-press); }
+.btn--inverse { background: var(--color-paper); color: var(--color-ink); }
+.btn--inverse:hover, .btn--inverse.is-hover { background: var(--color-tint); color: var(--color-ink); transform: translateY(-1px); box-shadow: var(--shadow-2); }
+.btn--inverse:active, .btn--inverse.is-active { background: var(--color-tint-strong); transform: translateY(1px); box-shadow: var(--shadow-press); }
+.btn--compact { min-height: var(--control-h-compact); padding: 0 var(--space-4); }
+.btn:disabled, .btn[aria-disabled="true"], .btn.is-disabled { opacity: var(--disabled-opacity); cursor: not-allowed; transform: none; }
+.btn.is-loading { position: relative; color: transparent; pointer-events: none; }
+.btn.is-loading::after { content: ""; position: absolute; width: 18px; height: 18px; border: 2px solid var(--color-paper); border-right-color: transparent; border-radius: 50%; animation: spin 0.7s linear infinite; }
+.btn--secondary.is-loading::after, .btn--ghost.is-loading::after { border-color: var(--color-primary); border-right-color: transparent; }
+.is-focus { outline: 2px solid var(--color-primary); outline-offset: 2px; }
+.on-dark .is-focus { outline-color: var(--color-secondary); }
+@keyframes spin { to { transform: rotate(360deg); } }
+@media (pointer: coarse) { .btn--compact { min-height: var(--control-h); } }
+
+/* Form field */
+.field { display: grid; gap: var(--space-2); max-width: 28rem; }
+.field label { font-size: var(--fs-ui); line-height: var(--lh-ui); font-weight: var(--fw-medium); }
+.field .req::after { content: " (required)"; color: var(--color-muted); font-weight: var(--fw-regular); }
+.input, .select, .textarea { box-sizing: border-box; width: 100%; min-height: var(--control-h); padding: 0 var(--space-4); border: 1px solid var(--color-muted); border-radius: var(--radius-sm); background: var(--color-paper); color: var(--color-ink); font: inherit; font-size: var(--fs-body); transition: border-color var(--dur-fast) var(--ease-standard); }
+.textarea { padding: var(--space-3) var(--space-4); min-height: 6rem; resize: vertical; }
+.input::placeholder, .textarea::placeholder { color: var(--color-muted); }
+.input:hover, .select:hover, .textarea:hover, .input.is-hover { border-color: var(--color-ink); }
+.input:focus-visible, .select:focus-visible, .textarea:focus-visible { border-color: var(--color-primary); }
+.input[aria-invalid="true"], .textarea[aria-invalid="true"] { border-color: var(--color-danger); }
+.input:disabled, .select:disabled, .textarea:disabled { opacity: var(--disabled-opacity); background: var(--color-divider); cursor: not-allowed; }
+.field__hint { font-size: var(--fs-caption); line-height: var(--lh-caption); color: var(--color-muted); }
+.field__error { display: flex; gap: var(--space-2); align-items: flex-start; font-size: var(--fs-caption); line-height: var(--lh-caption); color: var(--color-danger-text); }
+
+/* Checkbox */
+.check { display: flex; gap: var(--space-3); align-items: flex-start; font-size: var(--fs-ui); line-height: var(--lh-ui); }
+.check input { flex: none; width: 20px; height: 20px; margin: 1px 0 0; accent-color: var(--color-primary); }
+
+/* Badge */
+.badge { display: inline-flex; align-items: center; gap: 6px; padding: 2px 10px; border-radius: var(--radius-pill); font-size: var(--fs-caption); line-height: var(--lh-caption); font-weight: var(--fw-semibold); background: var(--color-divider); color: var(--color-ink); }
+.badge::before { content: ""; width: 6px; height: 6px; border-radius: 50%; background: currentColor; }
+.badge--success { background: var(--color-success-tint); color: var(--color-success-text); }
+.badge--success::before { background: var(--color-success); }
+.badge--warning { background: var(--color-warning-tint); color: var(--color-warning-text); }
+.badge--warning::before { background: var(--color-warning); }
+.badge--danger { background: var(--color-danger-tint); color: var(--color-danger-text); }
+.badge--danger::before { background: var(--color-danger); }
+.badge--primary { background: var(--color-tint); color: var(--color-primary); }
+
+.badge--secondary { background: var(--color-secondary); color: var(--color-ink); }
+
+/* Category tag and calendar event: the category color marks, ink carries the text */
+.cat { --cat: var(--color-muted); display: inline-flex; align-items: center; gap: 6px; padding: 2px 10px; border-radius: var(--radius-pill); font-size: var(--fs-caption); line-height: var(--lh-caption); font-weight: var(--fw-semibold); background: color-mix(in srgb, var(--cat) 12%, var(--color-paper)); color: var(--color-ink); }
+.cat::before { content: ""; width: 8px; height: 8px; border-radius: 50%; background: var(--cat); }
+.event { --cat: var(--color-muted); display: grid; gap: 2px; padding: var(--space-2) var(--space-3); border-radius: var(--radius-sm); border-left: 4px solid var(--cat); background: color-mix(in srgb, var(--cat) 12%, var(--color-paper)); color: var(--color-ink); font-size: var(--fs-caption); line-height: var(--lh-caption); }
+.event b { font-size: var(--fs-ui); font-weight: var(--fw-semibold); }
+.cat--tour, .event--tour { --cat: var(--color-cat-tour); }
+.cat--lease, .event--lease { --cat: var(--color-cat-lease); }
+.cat--inspection, .event--inspection { --cat: var(--color-cat-inspection); }
+.cat--billing, .event--billing { --cat: var(--color-cat-billing); }
+.cat--maintenance, .event--maintenance { --cat: var(--color-cat-maintenance); }
+
+/* Chart legend. Series colors: main measure primary, outcomes semantic (completed = success), reference lines muted and dashed */
+.legend { display: flex; flex-wrap: wrap; gap: var(--space-2) var(--space-5); font-size: var(--fs-ui); line-height: var(--lh-ui); color: var(--color-ink); }
+.legend__item { --series: var(--color-primary); display: inline-flex; align-items: center; gap: var(--space-2); }
+.legend__item::before { content: ""; flex: none; width: 14px; height: 14px; border-radius: 3px; background: var(--series); }
+.legend__item--line { --series: var(--color-muted); }
+.legend__item--line::before { width: 22px; height: 0; border-radius: 0; background: none; border-top: 3px dashed var(--series); }
+.legend__item--success { --series: var(--color-success); }
+.legend__item--warning { --series: var(--color-warning); }
+.legend__item--danger { --series: var(--color-danger); }
+.legend__item--secondary { --series: var(--color-secondary); }
+
+/* Highlight */
+.mark { background: var(--color-secondary); color: var(--color-ink); padding: 0 0.2em; border-radius: 3px; }
+
+/* Card */
+.card { box-sizing: border-box; background: var(--color-paper); border: 1px solid var(--color-divider); border-radius: var(--radius-md); padding: var(--space-5); box-shadow: var(--shadow-1); }
+.card--interactive { display: block; color: inherit; text-decoration: none; transition: box-shadow var(--dur-fast) var(--ease-standard), transform var(--dur-fast) var(--ease-standard); }
+.card--interactive:hover, .card--interactive.is-hover { box-shadow: var(--shadow-2); transform: translateY(-2px); color: inherit; }
+.card--interactive:active, .card--interactive.is-active { box-shadow: var(--shadow-1); transform: translateY(0); }
+.card--featured { border-color: var(--color-primary); box-shadow: var(--shadow-2); }
+
+/* Tabs */
+.tabs { display: flex; gap: var(--space-2); border-bottom: 1px solid var(--color-divider); }
+.tab { min-height: var(--control-h); padding: 0 var(--space-4); border: 0; border-bottom: 2px solid transparent; margin-bottom: -1px; background: none; color: var(--color-muted); font: inherit; font-size: var(--fs-ui); font-weight: var(--fw-medium); cursor: pointer; transition: color var(--dur-fast) var(--ease-standard), border-color var(--dur-fast) var(--ease-standard); }
+.tab:hover, .tab.is-hover { color: var(--color-ink); border-bottom-color: var(--color-muted); }
+.tab[aria-selected="true"] { color: var(--color-primary); border-bottom-color: var(--color-primary); }
+
+/* Accordion (native details) */
+.accordion details { border-bottom: 1px solid var(--color-divider); }
+.accordion summary { display: flex; align-items: center; justify-content: space-between; gap: var(--space-4); min-height: var(--control-h); padding-block: var(--space-2); font-weight: var(--fw-medium); cursor: pointer; list-style: none; transition: color var(--dur-fast) var(--ease-standard); }
+.accordion summary::-webkit-details-marker { display: none; }
+.accordion summary::after { content: "+"; font-size: 1.25rem; line-height: 1; color: var(--color-primary); }
+.accordion details[open] summary::after { content: "\2212"; }
+.accordion summary:hover { color: var(--color-primary); }
+.accordion details > :not(summary) { padding-bottom: var(--space-4); color: var(--color-muted); }
+
+/* Notice */
+.notice { display: grid; grid-template-columns: auto 1fr; gap: var(--space-3); padding: var(--space-4); border: 1px solid; border-radius: var(--radius-sm); font-size: var(--fs-ui); line-height: var(--lh-ui); }
+.notice strong { display: block; font-weight: var(--fw-semibold); }
+.notice svg { width: 20px; height: 20px; flex: none; }
+.notice--info { background: var(--color-tint); color: var(--color-primary); border-color: color-mix(in srgb, var(--color-primary) 35%, transparent); }
+.notice--success { background: var(--color-success-tint); color: var(--color-success-text); border-color: var(--color-success); }
+.notice--warning { background: var(--color-warning-tint); color: var(--color-warning-text); border-color: var(--color-warning); }
+.notice--danger { background: var(--color-danger-tint); color: var(--color-danger-text); border-color: var(--color-danger); }
+.notice__body { color: var(--color-ink); }
+
+/* Table */
+.table { width: 100%; border-collapse: collapse; font-size: var(--fs-ui); line-height: var(--lh-ui); }
+.table caption { text-align: left; padding-bottom: var(--space-3); color: var(--color-muted); }
+.table th { text-align: left; padding: var(--space-3) var(--space-4); font-weight: var(--fw-semibold); color: var(--color-muted); border-bottom: 1px solid var(--color-muted); background: var(--color-paper); }
+.table td { padding: var(--space-3) var(--space-4); border-bottom: 1px solid var(--color-divider); }
+.table tbody tr { transition: background-color var(--dur-instant) var(--ease-standard); }
+.table tbody tr:hover, .table tbody tr.is-hover { background: var(--color-tint); }
+
+/* Empty state */
+.empty { box-sizing: border-box; display: grid; gap: var(--space-3); justify-items: center; text-align: center; padding: var(--space-7) var(--space-5); border: 1px dashed var(--color-muted); border-radius: var(--radius-md); background: var(--color-paper); }
+.empty p { color: var(--color-muted); }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; scroll-behavior: auto !important; }
+  .btn:hover, .card--interactive:hover { transform: none; }
+}
+
+:root { --font-sans: "Inter", "Inter Variable", system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif; --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; color-scheme: light; }
+html { scroll-behavior: smooth; scroll-padding-top: 1rem; }
+body { background: var(--color-bg); color: var(--color-ink); }
+code, pre, .code { font-family: var(--font-mono); }
+code { font-size: 0.85em; background: var(--color-tint); padding: 1px 6px; border-radius: 6px; color: var(--color-ink); }
+
+.doc-shell { display: grid; grid-template-columns: minmax(0, 1fr); gap: var(--space-6); max-width: 1240px; margin: 0 auto; padding: var(--space-5) var(--gutter) var(--space-9); }
+.doc-nav { display: flex; flex-wrap: wrap; gap: var(--space-1) var(--space-2); padding-bottom: var(--space-4); border-bottom: 1px solid var(--color-divider); }
+.doc-nav a { display: inline-flex; align-items: center; min-height: 36px; padding: 0 var(--space-3); border-radius: var(--radius-sm); font-size: var(--fs-ui); font-weight: var(--fw-medium); color: var(--color-muted); text-decoration: none; }
+.doc-nav a:hover { background: var(--color-tint); color: var(--color-primary); }
+@media (min-width: 1024px) {
+  .doc-shell { grid-template-columns: 200px minmax(0, 1fr); gap: var(--space-8); }
+  .doc-nav { position: sticky; top: var(--space-5); align-self: start; flex-direction: column; flex-wrap: nowrap; border-bottom: 0; padding-bottom: 0; }
+}
+.doc-main { display: grid; gap: var(--space-9); min-width: 0; }
+.doc-head { display: grid; gap: var(--space-4); }
+.doc-chips { display: flex; flex-wrap: wrap; gap: var(--space-2); }
+.doc-sec { display: grid; gap: var(--space-5); scroll-margin-top: var(--space-5); min-width: 0; }
+.doc-sec > p { color: var(--color-muted); }
+.doc-sub { font-size: var(--fs-h3); line-height: var(--lh-h3); letter-spacing: var(--ls-h3); font-weight: var(--fw-semibold); margin: var(--space-3) 0 0; }
+.doc-note { font-size: var(--fs-ui); color: var(--color-muted); max-width: 70ch; }
+.doc-list { margin: 0; padding-left: 1.2rem; display: grid; gap: var(--space-2); max-width: 75ch; }
+.doc-three { display: grid; gap: var(--space-4); grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); }
+.doc-dim { color: var(--color-muted); font-size: var(--fs-caption); }
+.doc-dot { display: inline-block; width: 12px; height: 12px; border-radius: 50%; margin-right: 6px; vertical-align: -1px; }
+.doc-scroll { overflow-x: auto; border: 1px solid var(--color-divider); border-radius: var(--radius-md); background: var(--color-paper); }
+.doc-scroll .table th, .doc-scroll .table td { vertical-align: top; }
+.doc-scroll .table { min-width: 640px; }
+
+.doc-sw-grid { display: grid; gap: var(--space-4); grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); }
+.doc-sw { display: grid; grid-template-columns: 56px 1fr; gap: var(--space-3); align-items: start; padding: var(--space-3); background: var(--color-paper); border: 1px solid var(--color-divider); border-radius: var(--radius-sm); }
+.doc-sw__chip { width: 56px; height: 56px; border-radius: var(--radius-sm); }
+.doc-sw__meta { display: grid; gap: 2px; font-size: var(--fs-caption); line-height: var(--lh-caption); min-width: 0; }
+.doc-sw__meta b { font-size: var(--fs-ui); }
+.doc-sw__meta code { background: none; padding: 0; color: var(--color-muted); font-size: 0.8em; overflow-wrap: anywhere; }
+.doc-sw__r { color: var(--color-primary); font-weight: var(--fw-medium); }
+
+.doc-compare { display: grid; gap: var(--space-4); grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); }
+.doc-panel { display: grid; gap: var(--space-3); align-content: start; padding: var(--space-5); background: var(--color-paper); border: 1px solid var(--color-divider); border-radius: var(--radius-md); min-width: 0; }
+.doc-tag { font-size: var(--fs-caption); font-weight: var(--fw-semibold); letter-spacing: var(--ls-eyebrow); text-transform: uppercase; color: var(--color-muted); }
+.doc-tag--new { color: var(--color-success); }
+.doc-before .b-e { font-size: 10px; letter-spacing: 0.12em; font-weight: 750; text-transform: uppercase; color: #075cae; line-height: 1.6; }
+.doc-before .b-h { font-size: 70px; line-height: 1.06; letter-spacing: -0.055em; font-weight: 620; margin: 0; overflow-wrap: anywhere; }
+.doc-before .b-p { font-size: 15px; line-height: 1.8; color: #536173; margin: 0; }
+.doc-before .b-btn { display: inline-flex; align-items: center; height: 36px; padding: 0 18px; border-radius: 10px; background: #075cae; color: #fff; font-size: 13px; font-weight: 650; width: fit-content; }
+.doc-type-sample { display: grid; gap: var(--space-2); padding-block: var(--space-4); border-bottom: 1px solid var(--color-divider); }
+.doc-type-sample:last-child { border-bottom: 0; }
+
+.doc-space { display: grid; grid-template-columns: 90px 60px 1fr; align-items: center; gap: var(--space-3); font-size: var(--fs-caption); }
+.doc-space i { display: block; height: 12px; background: var(--color-primary); border-radius: 2px; }
+.doc-rules { display: grid; gap: var(--space-3); grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); }
+.doc-rule { padding: var(--space-4); background: var(--color-paper); border: 1px solid var(--color-divider); border-radius: var(--radius-sm); font-size: var(--fs-ui); }
+.doc-rule b { display: block; font-size: var(--fs-body); }
+.doc-rule span { color: var(--color-muted); }
+
+.doc-shapes { display: grid; gap: var(--space-4); grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); }
+.doc-shape { display: grid; place-items: center; min-height: 96px; padding: var(--space-3); text-align: center; background: var(--color-paper); border: 1px solid var(--color-divider); font-size: var(--fs-caption); }
+.doc-elev { display: grid; gap: var(--space-5); grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); padding: var(--space-5); background: var(--color-tint); border: 1px solid var(--color-divider); border-radius: var(--radius-md); }
+.doc-elev div { display: grid; gap: 2px; padding: var(--space-4); background: var(--color-paper); border-radius: var(--radius-md); font-size: var(--fs-caption); min-height: 88px; align-content: center; }
+.doc-elev b { font-size: var(--fs-ui); }
+
+.doc-demo { display: grid; gap: var(--space-4); padding: var(--space-5); background: var(--color-paper); border: 1px solid var(--color-divider); border-radius: var(--radius-md); min-width: 0; }
+.doc-demo > h3 { font-size: var(--fs-body); line-height: var(--lh-body); letter-spacing: 0; }
+.doc-states { display: grid; grid-template-columns: 100px repeat(6, minmax(0, 1fr)); gap: var(--space-3) var(--space-3); align-items: center; min-width: 760px; }
+.doc-states > b, .doc-states > span.doc-h { font-size: var(--fs-caption); font-weight: var(--fw-semibold); color: var(--color-muted); }
+.doc-states .btn { width: 100%; padding-inline: var(--space-3); }
+.doc-fields { display: grid; gap: var(--space-5); grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); }
+.doc-fields .field { max-width: none; }
+.doc-row { display: flex; flex-wrap: wrap; gap: var(--space-3); align-items: center; }
+.doc-cards { display: grid; gap: var(--space-4); grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); }
+.doc-notices { display: grid; gap: var(--space-3); grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); }
+.doc-frame { border: 1px solid var(--color-divider); border-radius: var(--radius-md); overflow: hidden; background: var(--color-tint); }
+.doc-frame__bar { padding: var(--space-2) var(--space-4); font-size: var(--fs-caption); color: var(--color-muted); background: var(--color-tint); border-bottom: 1px solid var(--color-divider); }
+.doc-frame__body { padding: var(--space-6) var(--space-5); display: grid; gap: var(--space-5); }
+.doc-hero { display: grid; gap: var(--space-6); grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); align-items: center; }
+.doc-hero__copy { display: grid; gap: var(--space-4); justify-items: start; }
+.doc-kpi { display: grid; gap: var(--space-3); grid-template-columns: repeat(3, 1fr); }
+.doc-kpi div { display: grid; gap: 2px; }
+.doc-kpi b { font-size: var(--fs-h3); line-height: 1.2; font-weight: var(--fw-semibold); font-variant-numeric: tabular-nums; }
+.doc-price { display: grid; gap: var(--space-4); grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); }
+.doc-price .card { display: grid; gap: var(--space-4); align-content: start; }
+.doc-price .amt { font-size: var(--fs-h2); line-height: var(--lh-h2); letter-spacing: var(--ls-h2); font-weight: var(--fw-semibold); font-variant-numeric: tabular-nums; }
+.doc-price .amt small { font-size: var(--fs-ui); font-weight: var(--fw-regular); color: var(--color-muted); letter-spacing: 0; }
+.doc-price ul { margin: 0; padding-left: 1.1rem; display: grid; gap: var(--space-2); font-size: var(--fs-ui); color: var(--color-muted); }
+.doc-demo-card { display: grid; gap: var(--space-4); max-width: 34rem; padding: var(--space-6); background: color-mix(in srgb, var(--color-ink) 88%, white); border-radius: var(--radius-md); }
+.doc-form { display: grid; gap: var(--space-4); max-width: 30rem; }
+.doc-form .field { max-width: none; }
+.code { position: relative; margin: 0; padding: var(--space-5); background: var(--color-ink); color: var(--color-paper); border-radius: var(--radius-md); font-size: 0.8rem; line-height: 1.6; overflow: auto; max-height: 28rem; white-space: pre; tab-size: 2; }
+.doc-copy { display: flex; justify-content: space-between; align-items: center; gap: var(--space-3); flex-wrap: wrap; }
+.doc-chips .badge { font-weight: var(--fw-medium); }
+@media print { @page { size: 381mm 268mm; margin: 0; } html { -webkit-print-color-adjust: exact; print-color-adjust: exact; } }
+@media print { .doc-nav { display: none; } .doc-shell { grid-template-columns: minmax(0, 1fr); } }
+</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
+<symbol id="i-info" viewBox="0 0 20 20"><circle cx="10" cy="10" r="8.25" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M10 9v5M10 6.2v.1" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></symbol>
+<symbol id="i-check" viewBox="0 0 20 20"><circle cx="10" cy="10" r="8.25" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M6.4 10.3l2.5 2.5 4.7-5" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+<symbol id="i-warn" viewBox="0 0 20 20"><path d="M10 2.8l7.4 13H2.6z" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/><path d="M10 8v4M10 14.2v.1" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></symbol>
+<symbol id="i-x" viewBox="0 0 20 20"><circle cx="10" cy="10" r="8.25" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M7.2 7.2l5.6 5.6M12.8 7.2l-5.6 5.6" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></symbol>
+</defs></svg>
+<div class="doc-shell">
+  <nav class="doc-nav" aria-label="Sections">
+    <a href="#overview">Overview</a>
+    <a href="#color">Color</a>
+    <a href="#type">Typography</a>
+    <a href="#space">Space and layout</a>
+    <a href="#shape">Shape and elevation</a>
+    <a href="#motion">Motion</a>
+    <a href="#components">Components</a>
+    <a href="#patterns">Page patterns</a>
+    <a href="#a11y">Accessibility</a>
+    <a href="#migrate">Migration map</a>
+    <a href="#css">CSS</a>
+    <a href="#open">Open decisions</a>
+  </nav>
+
+  <main class="doc-main">
+    <header class="doc-head" id="overview">
+      <p class="eyebrow">Proposal v1 for mobve.com and the staff app</p>
+      <h1>Mobve Design System</h1>
+      <p class="lead">One set of values for the public website and the staff workspace, rebuilt from a small base: a primary, a secondary, an ink, a paper and two grays. Everything else is calculated.</p>
+      <div class="doc-chips">
+        <span class="badge badge--primary">Inter Variable</span>
+        <span class="badge badge--primary">Primary #0b63ce</span><span class="badge badge--secondary">Secondary #ffc845</span>
+        <span class="badge badge--primary">8 px, 14 px, pill</span>
+        <span class="badge badge--primary">4 px spacing base</span>
+        <span class="badge badge--primary">44 px touch targets</span>
+      </div>
+    </header>
+
+    <section class="doc-sec" aria-labelledby="h-why">
+      <h2 id="h-why">What this fixes</h2>
+      <div class="doc-three">
+        <div class="doc-rule"><b>One scale</b><span>The website uses 20 font sizes and 8 weights. The system keeps 9 text roles and 3 weights.</span></div>
+        <div class="doc-rule"><b>Six base colors</b><span>The theme had 30 color variables and six blues. It now has a primary, a secondary, an ink, a paper, a text gray, a background gray and three semantic signals. States and tints are calculated.</span></div>
+        <div class="doc-rule"><b>Every state defined</b><span>Hover, pressed, focus, disabled, loading and error exist for every control, with exact values.</span></div>
+        <div class="doc-rule"><b>One font on both products</b><span>The site names Inter but never loads it. The app loads Inter Variable. Both load it from their own server.</span></div>
+        <div class="doc-rule"><b>Readable sizes</b><span>Nothing smaller than 12 px. Body text is 16 px on the site. Controls are 44 px high.</span></div>
+        <div class="doc-rule"><b>Measured, not guessed</b><span>Current values come from computed styles on the live pages. Every contrast ratio below is calculated.</span></div>
+      </div>
+      <p class="doc-note">All specimens on this page use the system's own tokens and classes. Hover and keyboard focus work on every live example. The Inter font loads from Google Fonts here only to render the specimens; on mobve.com it must be self-hosted because the site's security policy allows only its own files.</p>
+    </section>
+
+    <section class="doc-sec" id="color" aria-labelledby="h-color">
+      <h2 id="h-color">Color</h2>
+      <p>Route A. One blue does every "act here" job, including the logo and information messages. A warm yellow carries highlights, featured items and the second chart series; it is never text on paper. One gray serves secondary text and control borders, and #fafafa, the light gray the app already uses, is the page background under white cards and panels. The blue tint is kept for interactive states. Status colors follow traffic lights: green, amber and red, each with a dark text in the same hue and a light tint for backgrounds.</p>
+      <h3 class="doc-sub">Base, 6</h3><div class="doc-sw-grid"><div class="doc-sw"><div class="doc-sw__chip" style="background:#0b63ce;border:1px solid var(--color-divider)"></div><div class="doc-sw__meta"><code>--color-primary</code><b>#0b63ce</b><span>Buttons, links, selected state, focus, information, logo</span><span class="doc-sw__r">white text 5.69:1 AA</span></div></div><div class="doc-sw"><div class="doc-sw__chip" style="background:#ffc845;border:1px solid var(--color-divider)"></div><div class="doc-sw__meta"><code>--color-secondary</code><b>#ffc845</b><span>Highlights, featured badge, second chart series, accents on the dark band. Never text on paper</span><span class="doc-sw__r">ink text on it 11.21:1 AAA</span></div></div><div class="doc-sw"><div class="doc-sw__chip" style="background:#101b2b;border:1px solid var(--color-divider)"></div><div class="doc-sw__meta"><code>--color-ink</code><b>#101b2b</b><span>All text and the dark band</span><span class="doc-sw__r">on paper 17.3:1 AAA</span></div></div><div class="doc-sw"><div class="doc-sw__chip" style="background:#ffffff;border:1px solid var(--color-divider)"></div><div class="doc-sw__meta"><code>--color-paper</code><b>#ffffff</b><span>Background and every surface</span><span class="doc-sw__r"></span></div></div><div class="doc-sw"><div class="doc-sw__chip" style="background:#536173;border:1px solid var(--color-divider)"></div><div class="doc-sw__meta"><code>--color-muted</code><b>#536173</b><span>Gray for secondary text, captions, placeholders and control borders</span><span class="doc-sw__r">on paper 6.32:1 AA</span></div></div><div class="doc-sw"><div class="doc-sw__chip" style="background:#fafafa;border:1px solid var(--color-divider)"></div><div class="doc-sw__meta"><code>--color-bg</code><b>#fafafa</b><span>Page background, as in the current app. Header, sidebar, cards and panels are paper on it, with a divider border</span><span class="doc-sw__r">muted text on it 6.05:1 AA</span></div></div></div><h3 class="doc-sub">Semantic, 3 traffic-light signals and their text</h3><div class="doc-sw-grid"><div class="doc-sw"><div class="doc-sw__chip" style="background:#03a14a;border:1px solid var(--color-divider)"></div><div class="doc-sw__meta"><code>--color-success</code><b>#03a14a</b><span>Success signal: dots, borders, icons on paper, chart status</span><span class="doc-sw__r">on paper 3.39:1, graphics only (3:1)</span></div></div><div class="doc-sw"><div class="doc-sw__chip" style="background:#09672e;border:1px solid var(--color-divider)"></div><div class="doc-sw__meta"><code>--color-success-text</code><b>#09672e</b><span>Success text and icon</span><span class="doc-sw__r">on paper 7.02:1 AAA</span></div></div><div class="doc-sw"><div class="doc-sw__chip" style="background:#f7a30d;border:1px solid var(--color-divider)"></div><div class="doc-sw__meta"><code>--color-warning</code><b>#f7a30d</b><span>Warning signal: fills under ink text; dots and borders only next to a label</span><span class="doc-sw__r">ink text on it 8.4:1 AAA</span></div></div><div class="doc-sw"><div class="doc-sw__chip" style="background:#7d5002;border:1px solid var(--color-divider)"></div><div class="doc-sw__meta"><code>--color-warning-text</code><b>#7d5002</b><span>Warning text and icon</span><span class="doc-sw__r">on paper 6.95:1 AA</span></div></div><div class="doc-sw"><div class="doc-sw__chip" style="background:#d73431;border:1px solid var(--color-divider)"></div><div class="doc-sw__meta"><code>--color-danger</code><b>#d73431</b><span>Error signal: destructive button, error border, dots</span><span class="doc-sw__r">white text 4.75:1 AA</span></div></div><div class="doc-sw"><div class="doc-sw__chip" style="background:#a12623;border:1px solid var(--color-divider)"></div><div class="doc-sw__meta"><code>--color-danger-text</code><b>#a12623</b><span>Error text and icon</span><span class="doc-sw__r">on paper 7.45:1 AAA</span></div></div></div>
+      <h3 class="doc-sub">Calculated, not chosen</h3>
+      <p class="doc-note">These follow from the chosen colors with <code>color-mix()</code>. Change a base color and they update. A state is the same hue made darker or lighter.</p>
+      <div class="doc-scroll"><table class="table">
+        <thead><tr><th>Token</th><th>Formula</th><th>Result</th><th>Use</th><th>Contrast</th></tr></thead>
+        <tbody><tr><td><span class='doc-dot' style='background:#dddfe3;border:1px solid var(--color-divider)'></span><code>--color-divider</code></td><td>muted at 20 percent over paper</td><td><code>#dddfe3</code></td><td>Dividers, card edges, neutral badge, disabled field</td><td>Decorative</td></tr><tr><td><span class='doc-dot' style='background:#e7effa;border:1px solid var(--color-divider)'></span><code>--color-tint</code></td><td>primary at 10 percent over paper</td><td><code>#e7effa</code></td><td>Hover fills, selected state, information notice</td><td>primary text 4.91:1</td></tr><tr><td><span class='doc-dot' style='background:#c4daf3;border:1px solid var(--color-divider)'></span><code>--color-tint-strong</code></td><td>primary at 24 percent over paper</td><td><code>#c4daf3</code></td><td>Pressed fills (text switches to primary hover)</td><td>primary hover text 5.67:1</td></tr><tr><td><span class='doc-dot' style='background:#094da1;border:1px solid var(--color-divider)'></span><code>--color-primary-hover</code></td><td>primary with 22 percent black</td><td><code>#094da1</code></td><td>Hover</td><td>white text 8.11:1</td></tr><tr><td><span class='doc-dot' style='background:#063773;border:1px solid var(--color-divider)'></span><code>--color-primary-active</code></td><td>primary with 44 percent black</td><td><code>#063773</code></td><td>Pressed</td><td>white text 11.66:1</td></tr><tr><td><span class='doc-dot' style='background:#bcbfc4;border:1px solid var(--color-divider)'></span><code>--color-on-dark-muted</code></td><td>paper at 72 percent over ink</td><td><code>#bcbfc4</code></td><td>Secondary text on the dark band</td><td>on ink 9.38:1</td></tr><tr><td><span class='doc-dot' style='background:#e1f4e9;border:1px solid var(--color-divider)'></span><code>--color-success-tint</code></td><td>success at 12 percent over paper</td><td><code>#e1f4e9</code></td><td>Success notice and badge</td><td>its text 6.12:1</td></tr><tr><td><span class='doc-dot' style='background:#fef0d8;border:1px solid var(--color-divider)'></span><code>--color-warning-tint</code></td><td>warning at 16 percent over paper</td><td><code>#fef0d8</code></td><td>Warning notice and badge</td><td>its text 6.18:1</td></tr><tr><td><span class='doc-dot' style='background:#fbebea;border:1px solid var(--color-divider)'></span><code>--color-danger-tint</code></td><td>danger at 10 percent over paper</td><td><code>#fbebea</code></td><td>Error notice and badge</td><td>its text 6.45:1</td></tr><tr><td><span class='doc-dot' style='background:#a82926;border:1px solid var(--color-divider)'></span><code>--color-danger-hover</code></td><td>danger with 22 percent black</td><td><code>#a82926</code></td><td>Destructive button hover</td><td>white text 6.98:1</td></tr><tr><td><span class='doc-dot' style='background:#781d1b;border:1px solid var(--color-divider)'></span><code>--color-danger-active</code></td><td>danger with 44 percent black</td><td><code>#781d1b</code></td><td>Destructive button pressed</td><td>white text 10.55:1</td></tr></tbody>
+      </table></div>
+      <h3 class="doc-sub">From six blues to one</h3>
+      <div class="doc-scroll"><table class="table">
+        <thead><tr><th>Found today</th><th>Where</th><th>Becomes</th></tr></thead>
+        <tbody>
+          <tr><td><code>#0878f9</code></td><td>brand.html, logo</td><td><code>--color-primary</code> #0b63ce (logo recolor is the client's decision)</td></tr>
+          <tr><td><code>#075cae</code></td><td>Website links and buttons</td><td><code>--color-primary</code></td></tr>
+          <tr><td><code>#0a88db</code></td><td>App token --primary, 3.8:1 with white</td><td><code>--color-primary</code></td></tr>
+          <tr><td><code>#0878c4</code></td><td>App primary button, focus ring</td><td><code>--color-primary</code></td></tr>
+          <tr><td><code>#0875bd</code></td><td>App links</td><td><code>--color-primary</code></td></tr>
+          <tr><td><code>#0867a6</code></td><td>App information status</td><td><code>--color-primary</code></td></tr>
+        </tbody>
+      </table></div>
+      <h3 class="doc-sub">From eight neutrals to four</h3>
+      <div class="doc-scroll"><table class="table">
+        <thead><tr><th>Before</th><th>After</th><th>Why</th></tr></thead>
+        <tbody>
+          <tr><td>ink</td><td><code>--color-ink</code></td><td>All text, and the dark band.</td></tr>
+          <tr><td>muted, subtle, line-strong</td><td><code>--color-muted</code> #536173</td><td>One gray for secondary text, placeholders and control borders. 6.32:1 on paper, so it is readable as text and clear as an outline.</td></tr>
+          <tr><td>line</td><td><code>--color-divider</code>, calculated</td><td>The gray at 20 percent. Decorative, no contrast needed.</td></tr>
+          <tr><td>canvas, soft</td><td><code>--color-bg</code> #fafafa</td><td>Page background, the same as the current app. White surfaces sit on it with a divider border, because white and #fafafa differ by only 1.04:1.</td></tr>
+          <tr><td>surface</td><td><code>--color-paper</code></td><td>White background and surfaces.</td></tr>
+        </tbody>
+      </table></div>
+      <h3 class="doc-sub">Semantic colors, from traffic lights</h3>
+      <div class="doc-scroll"><table class="table">
+        <thead><tr><th>State</th><th>Traffic reference</th><th>Signal</th><th>Text</th><th>Tint</th><th>Before</th></tr></thead>
+        <tbody>
+          <tr><td>Success</td><td><span class="doc-dot" style="background:#00a651"></span>green #00a651</td><td><span class="doc-dot" style="background:#03a14a"></span>#03a14a</td><td><span class="doc-dot" style="background:#09672e"></span>#09672e</td><td><span class="doc-dot" style="background:#e1f4e9;border:1px solid var(--color-divider)"></span>12 percent</td><td>#166534 on #e7f4ec</td></tr>
+          <tr><td>Warning</td><td><span class="doc-dot" style="background:#ffbf00"></span>amber #ffbf00</td><td><span class="doc-dot" style="background:#f7a30d"></span>#f7a30d</td><td><span class="doc-dot" style="background:#7d5002"></span>#7d5002</td><td><span class="doc-dot" style="background:#fef0d8;border:1px solid var(--color-divider)"></span>16 percent</td><td>#854d0e on #fbf1dc</td></tr>
+          <tr><td>Error</td><td><span class="doc-dot" style="background:#e30613"></span>red #e30613</td><td><span class="doc-dot" style="background:#d73431"></span>#d73431</td><td><span class="doc-dot" style="background:#a12623"></span>#a12623</td><td><span class="doc-dot" style="background:#fbebea;border:1px solid var(--color-divider)"></span>10 percent</td><td>#b42318 on #fdecea</td></tr>
+          <tr><td>Information</td><td>none</td><td colspan="3">Uses the primary and its tint</td><td>#0867a6 on #e6f1f9</td></tr>
+        </tbody>
+      </table></div>
+      <p class="doc-note">Each signal keeps the hue of its traffic light (green 150, amber 72, red 27 in OKLCH) at a similar lightness, so the three read as a set. The signal marks the state: badge dot, notice border, error border, destructive button, chart status. Text stays in the dark version, which reaches 6 to 7.5:1 on its tint. The real traffic amber (#ffbf00) is almost the same as the secondary yellow, so the warning moves toward orange (#f7a30d); keep the secondary away from status and always show a warning with its icon and text.</p>
+      <h3 class="doc-sub">Appointment categories, 5</h3>
+      <p class="doc-note">The app colors appointments by purpose. The original five colors collided with the new palette (Tour with the primary, Maintenance with error, Billing between blue and violet). Tour and Billing sit at the lightness of the success signal; Lease, Inspection and Maintenance are deeper. Their hues avoid the primary, the secondary and the orange-red arc used by warning and error, and are at least 0.12 apart in OKLab from each other and from every brand and semantic color. They mark dots, event borders and bars. Text on them is always ink on a 12 percent tint, never the category color on paper.</p>
+      <div class="doc-scroll"><table class="table">
+        <thead><tr><th>Category</th><th>Token</th><th>New</th><th>On paper (graphics, 3:1)</th><th>Before</th><th>Purposes (inferred, confirm with the team)</th><th>Why it changed</th></tr></thead>
+        <tbody><tr><td><span class='cat' style='--cat:#0891c9'>Tour</span></td><td><code>--color-cat-tour</code></td><td><span class='doc-dot' style='background:#0891c9'></span><code>#0891c9</code></td><td>3.56:1</td><td><span class='doc-dot' style='background:#2a78d6'></span><code>#2a78d6</code></td><td>Tour, Second Tour</td><td>Was almost the primary blue. Now a lighter sky blue at the signal lightness</td></tr><tr><td><span class='cat' style='--cat:#794db6'>Lease</span></td><td><code>--color-cat-lease</code></td><td><span class='doc-dot' style='background:#794db6'></span><code>#794db6</code></td><td>5.92:1</td><td><span class='doc-dot' style='background:#8654b3'></span><code>#8654b3</code></td><td>Lease Signing, Renewal Meeting, Document Review, Key Pickup</td><td>Kept violet</td></tr><tr><td><span class='cat' style='--cat:#6a7a31'>Inspection</span></td><td><code>--color-cat-inspection</code></td><td><span class='doc-dot' style='background:#6a7a31'></span><code>#6a7a31</code></td><td>4.73:1</td><td><span class='doc-dot' style='background:#167a77'></span><code>#167a77</code></td><td>Move In Inspection, Move Out Inspection, Move In</td><td>Teal sat too close to the cyan Tour. Now olive</td></tr><tr><td><span class='cat' style='--cat:#b55fba'>Billing</span></td><td><code>--color-cat-billing</code></td><td><span class='doc-dot' style='background:#b55fba'></span><code>#b55fba</code></td><td>3.95:1</td><td><span class='doc-dot' style='background:#5956c9'></span><code>#5956c9</code></td><td>Billing or payment consultation</td><td>Indigo sat between the primary and Lease. Now magenta</td></tr><tr><td><span class='cat' style='--cat:#864821'>Maintenance</span></td><td><code>--color-cat-maintenance</code></td><td><span class='doc-dot' style='background:#864821'></span><code>#864821</code></td><td>7.09:1</td><td><span class='doc-dot' style='background:#b54242'></span><code>#b54242</code></td><td>Maintenance Visit</td><td>Red read as an error. Now copper</td></tr></tbody>
+      </table></div>
+    </section>
+
+    <section class="doc-sec" id="type" aria-labelledby="h-type">
+      <h2 id="h-type">Typography</h2>
+      <p>Inter Variable, three weights (400, 500, 600). Headings step down fluidly on small screens. Text blocks stop at 65 characters. Headline tracking is -0.02em, which is safe with Inter and avoids the risk of touching letters that -0.055em brings when the font falls back to the system face.</p>
+      <div class="doc-compare">
+        <div class="doc-panel doc-before">
+          <span class="doc-tag">Today (measured on mobve.com, 1440 px)</span>
+          <span class="b-e">Voice AI for property operations</span>
+          <p class="b-h">Know why residents call.</p>
+          <p class="b-p">Mobve connects resident and leasing conversations to the property, the issue, and the person who owns what happens next.</p>
+          <span class="b-btn">Try the 60-second demo</span>
+        </div>
+        <div class="doc-panel">
+          <span class="doc-tag doc-tag--new">Proposed</span>
+          <span class="eyebrow">Voice AI for property operations</span>
+          <h1>Know why residents call.</h1>
+          <p>Mobve connects resident and leasing conversations to the property, the issue, and the person who owns what happens next.</p>
+          <span><a class="btn btn--primary" href="#patterns">Try the 60-second demo</a></span>
+        </div>
+      </div>
+      <p class="doc-note">The left panel is drawn with the current values. Both panels use Inter so that only the scale, spacing and tracking differ.</p>
+      <h3 class="doc-sub">Roles</h3>
+      <div class="doc-scroll"><table class="table">
+        <thead><tr><th>Role</th><th>Token and value</th><th>Size in px (390 / 768 / 1440 wide)</th><th>Line height</th><th>Tracking</th><th>Weight</th></tr></thead>
+        <tbody><tr><td><b>h1</b><br><span class='doc-dim'>Display</span></td><td><code>var(--fs-h1)</code><br><span class='doc-dim'>clamp(2.5rem, 1.75rem + 3.2vw, 4rem)</span></td><td>40.5 / 52.6 / 64</td><td>1.08</td><td>-0.02em</td><td>600</td></tr><tr><td><b>h2</b><br><span class='doc-dim'>Section title</span></td><td><code>var(--fs-h2)</code><br><span class='doc-dim'>clamp(2rem, 1.5rem + 2vw, 2.75rem)</span></td><td>32 / 39.4 / 44</td><td>1.12</td><td>-0.02em</td><td>600</td></tr><tr><td><b>h3</b><br><span class='doc-dim'>Card and panel title</span></td><td><code>var(--fs-h3)</code><br><span class='doc-dim'>1.5rem</span></td><td>24 / 24 / 24</td><td>1.25</td><td>-0.01em</td><td>600</td></tr><tr><td><b>lead</b><br><span class='doc-dim'>Lead paragraph</span></td><td><code>var(--fs-lead)</code><br><span class='doc-dim'>1.25rem</span></td><td>20</td><td>1.45</td><td>0</td><td>400</td></tr><tr><td><b>body</b><br><span class='doc-dim'>Body</span></td><td><code>var(--fs-body)</code><br><span class='doc-dim'>1rem</span></td><td>16</td><td>1.5</td><td>0</td><td>400</td></tr><tr><td><b>ui</b><br><span class='doc-dim'>Menu, labels, table</span></td><td><code>var(--fs-ui)</code><br><span class='doc-dim'>0.875rem</span></td><td>14</td><td>1.4</td><td>0</td><td>500</td></tr><tr><td><b>button</b><br><span class='doc-dim'>Button label</span></td><td><code>var(--fs-button)</code><br><span class='doc-dim'>0.9375rem</span></td><td>15</td><td>1</td><td>0</td><td>600</td></tr><tr><td><b>caption</b><br><span class='doc-dim'>Caption, hint, legal</span></td><td><code>var(--fs-caption)</code><br><span class='doc-dim'>0.75rem</span></td><td>12</td><td>1.4</td><td>0</td><td>400</td></tr><tr><td><b>eyebrow</b><br><span class='doc-dim'>Section label</span></td><td><code>var(--fs-caption)</code><br><span class='doc-dim'>0.75rem</span></td><td>12</td><td>1.4</td><td>+0.08em, uppercase</td><td>600</td></tr></tbody>
+      </table></div>
+      <h3 class="doc-sub">Specimens</h3>
+      <div class="doc-demo">
+        <div class="doc-type-sample"><span class="doc-dim">h1 · 64 px max</span><h1>Own what's next.</h1></div>
+        <div class="doc-type-sample"><span class="doc-dim">h2 · 44 px max</span><h2>A plan for the operation you run.</h2></div>
+        <div class="doc-type-sample"><span class="doc-dim">h3 · 24 px</span><h3>Jackson Apartments</h3></div>
+        <div class="doc-type-sample"><span class="doc-dim">lead · 20 px</span><p class="lead">Property-aware voice AI. Built for the work that follows.</p></div>
+        <div class="doc-type-sample"><span class="doc-dim">body · 16 px</span><p>A returning issue should come with its history. Connect the new conversation to the previous request, so the resident doesn't have to reconstruct the story.</p></div>
+        <div class="doc-type-sample"><span class="doc-dim">ui · 14 px</span><span class="ui">Maintenance Requests · Appointments · Call Log</span></div>
+        <div class="doc-type-sample"><span class="doc-dim">caption · 12 px</span><span class="caption">Illustrative scenario. Stock photography, not a customer property.</span></div>
+        <div class="doc-type-sample"><span class="doc-dim">eyebrow · 12 px</span><span class="eyebrow">Real places. Everyday responsibilities.</span></div>
+      </div>
+    </section>
+
+    <section class="doc-sec" id="space" aria-labelledby="h-space">
+      <h2 id="h-space">Space and layout</h2>
+      <p>Every margin, padding and gap comes from this list. The base unit is 4 px.</p>
+      <div class="doc-demo"><div class='doc-space'><code>--space-1</code><span>4 px</span><i style='width:4px'></i></div><div class='doc-space'><code>--space-2</code><span>8 px</span><i style='width:8px'></i></div><div class='doc-space'><code>--space-3</code><span>12 px</span><i style='width:12px'></i></div><div class='doc-space'><code>--space-4</code><span>16 px</span><i style='width:16px'></i></div><div class='doc-space'><code>--space-5</code><span>24 px</span><i style='width:24px'></i></div><div class='doc-space'><code>--space-6</code><span>32 px</span><i style='width:32px'></i></div><div class='doc-space'><code>--space-7</code><span>48 px</span><i style='width:48px'></i></div><div class='doc-space'><code>--space-8</code><span>64 px</span><i style='width:64px'></i></div><div class='doc-space'><code>--space-9</code><span>96 px</span><i style='width:96px'></i></div></div>
+      <div class="doc-rules">
+        <div class="doc-rule"><b>Container</b><span><code>--container: 1240px</code>, side gutter <code>clamp(1rem, 4vw, 2rem)</code></span></div>
+        <div class="doc-rule"><b>Section padding</b><span><code>--section-y: clamp(3rem, 2rem + 4vw, 5rem)</code>: 48 px on phones, 80 px on desktop, the same for every section</span></div>
+        <div class="doc-rule"><b>Grid gap</b><span>32 px in marketing content, 16 px in app screens, 8 px in dense tables</span></div>
+        <div class="doc-rule"><b>Card padding</b><span>24 px (<code>--space-5</code>)</span></div>
+        <div class="doc-rule"><b>Breakpoints</b><span>480, 768, 1024 and 1280 px. Mobile first: styles grow with <code>min-width</code>.</span></div>
+        <div class="doc-rule"><b>Reading width</b><span><code>--measure: 65ch</code> for paragraphs. The demo intro is 96 characters per line today.</span></div>
+      </div>
+    </section>
+
+    <section class="doc-sec" id="shape" aria-labelledby="h-shape">
+      <h2 id="h-shape">Shape and elevation</h2>
+      <p>Three radii replace nine. Four shadow levels, used by role.</p>
+      <div class="doc-shapes">
+        <div class="doc-shape" style="border-radius:var(--radius-sm)"><span><b>8 px</b><br><code>--radius-sm</code><br>Buttons, inputs, notices</span></div>
+        <div class="doc-shape" style="border-radius:var(--radius-md)"><span><b>14 px</b><br><code>--radius-md</code><br>Cards, panels, dialogs</span></div>
+        <div class="doc-shape" style="border-radius:var(--radius-pill)"><span><b>999 px</b><br><code>--radius-pill</code><br>Badges, chips</span></div>
+      </div>
+      <div class="doc-elev">
+        <div style="box-shadow:var(--shadow-1)"><b>Level 1</b><span>Cards at rest</span><code>--shadow-1</code></div>
+        <div style="box-shadow:var(--shadow-2)"><b>Level 2</b><span>Card hover, menus</span><code>--shadow-2</code></div>
+        <div style="box-shadow:var(--shadow-3)"><b>Level 3</b><span>Sticky header</span><code>--shadow-3</code></div>
+        <div style="box-shadow:var(--shadow-4)"><b>Level 4</b><span>Dialogs</span><code>--shadow-4</code></div>
+      </div>
+    </section>
+
+    <section class="doc-sec" id="motion" aria-labelledby="h-motion">
+      <h2 id="h-motion">Motion</h2>
+      <p>Four durations and two curves. Hover and pressed feedback use 200 ms. With reduced motion on, every transition drops to 0.01 ms and lifts are removed.</p>
+      <div class="doc-scroll"><table class="table">
+        <thead><tr><th>Token</th><th>Value</th><th>Use</th></tr></thead>
+        <tbody>
+          <tr><td><code>--dur-instant</code></td><td>100 ms</td><td>Table row hover, icon toggles</td></tr>
+          <tr><td><code>--dur-fast</code></td><td>200 ms</td><td>Buttons, links, cards, inputs</td></tr>
+          <tr><td><code>--dur-base</code></td><td>300 ms</td><td>Panels, accordions, tabs</td></tr>
+          <tr><td><code>--dur-slow</code></td><td>500 ms</td><td>Dialog entry, page-level changes</td></tr>
+          <tr><td><code>--ease-standard</code></td><td>cubic-bezier(0.4, 0, 0.2, 1)</td><td>State changes</td></tr>
+          <tr><td><code>--ease-emphasized</code></td><td>cubic-bezier(0.2, 0.6, 0.3, 1)</td><td>Elements entering or leaving the screen</td></tr>
+        </tbody>
+      </table></div>
+    </section>
+
+    <section class="doc-sec" id="components" aria-labelledby="h-comp">
+      <h2 id="h-comp">Components</h2>
+      <p>Every component shows its states with forced classes (<code>.is-hover</code>, <code>.is-active</code>, <code>.is-focus</code>) so they can be compared side by side. The real <code>:hover</code>, <code>:active</code> and <code>:focus-visible</code> selectors work as well.</p>
+
+      <div class="doc-demo">
+        <h3>Button</h3>
+        <div class="doc-scroll" style="border:0;background:none"><div class="doc-states">
+          <b></b><span class="doc-h">Default</span><span class="doc-h">Hover</span><span class="doc-h">Pressed</span><span class="doc-h">Focus</span><span class="doc-h">Disabled</span><span class="doc-h">Loading</span>
+          <b>Primary</b>
+          <button class="btn btn--primary" type="button">Save</button><button class="btn btn--primary is-hover" type="button">Save</button><button class="btn btn--primary is-active" type="button">Save</button><button class="btn btn--primary is-focus" type="button">Save</button><button class="btn btn--primary" type="button" disabled>Save</button><button class="btn btn--primary is-loading" type="button">Save</button>
+          <b>Secondary</b>
+          <button class="btn btn--secondary" type="button">Cancel</button><button class="btn btn--secondary is-hover" type="button">Cancel</button><button class="btn btn--secondary is-active" type="button">Cancel</button><button class="btn btn--secondary is-focus" type="button">Cancel</button><button class="btn btn--secondary" type="button" disabled>Cancel</button><button class="btn btn--secondary is-loading" type="button">Cancel</button>
+          <b>Ghost</b>
+          <button class="btn btn--ghost" type="button">Reset</button><button class="btn btn--ghost is-hover" type="button">Reset</button><button class="btn btn--ghost is-active" type="button">Reset</button><button class="btn btn--ghost is-focus" type="button">Reset</button><button class="btn btn--ghost" type="button" disabled>Reset</button><button class="btn btn--ghost is-loading" type="button">Reset</button>
+          <b>Danger</b>
+          <button class="btn btn--danger" type="button">Remove</button><button class="btn btn--danger is-hover" type="button">Remove</button><button class="btn btn--danger is-active" type="button">Remove</button><button class="btn btn--danger is-focus" type="button">Remove</button><button class="btn btn--danger" type="button" disabled>Remove</button><button class="btn btn--danger is-loading" type="button">Remove</button>
+        </div></div>
+        <p class="doc-note">Height 44 px, padding 24 px, radius 8 px, label 15 px weight 600. Hover: 22 percent darker, lifts 1 px, shadow level 2. Pressed: 44 percent darker, sinks 1 px, inner shadow. Each step changes color and position, so the three states are distinct. Disabled is 38 percent opacity with the label still readable. Compact (36 px) is allowed only for dense tables used with a mouse.</p>
+        <div class="on-dark" style="padding:var(--space-5);border-radius:var(--radius-md)">
+          <div class="doc-row">
+            <button class="btn btn--inverse" type="button">Inverse default</button>
+            <button class="btn btn--inverse is-hover" type="button">Inverse hover</button>
+            <button class="btn btn--inverse is-focus" type="button">Inverse focus</button>
+            <button class="btn btn--inverse" type="button" disabled>Inverse disabled</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="doc-demo">
+        <h3>Link and menu item</h3>
+        <div class="doc-row">
+          <a class="nav-link" href="#components">How it helps</a>
+          <a class="nav-link is-hover" href="#components">Hover</a>
+          <a class="nav-link" href="#components" aria-current="page">Current page</a>
+          <a href="#components">Text link</a>
+          <a href="#components" class="is-focus">Text link, focus</a>
+        </div>
+        <p class="doc-note">Menu items are 44 px high, 14 px, weight 500. Hover and the current page both show a 2 px underline in the primary.</p>
+      </div>
+
+      <div class="doc-demo">
+        <h3>Form field</h3>
+        <div class="doc-fields">
+          <div class="field"><label for="f1" class="req">Work email</label><input class="input" id="f1" type="email" placeholder="name@company.com"><span class="field__hint">We only use it to reply.</span></div>
+          <div class="field"><label for="f2">Hover</label><input class="input is-hover" id="f2" type="text" value="Maple Grove Commons"></div>
+          <div class="field"><label for="f3">Focus</label><input class="input is-focus" id="f3" type="text" value="Maple Grove Commons"></div>
+          <div class="field"><label for="f4" class="req">Error</label><input class="input" id="f4" type="email" value="name@" aria-invalid="true" aria-describedby="e4"><span class="field__error" id="e4"><svg aria-hidden="true" width="16" height="16" style="flex:none"><use href="#i-x"/></svg>Enter an email like name@company.com.</span></div>
+          <div class="field"><label for="f5">Disabled</label><input class="input" id="f5" type="text" value="Not editable" disabled></div>
+          <div class="field"><label for="f6">Select</label><select class="select" id="f6"><option>All properties</option><option>Brookfield Gardens</option></select></div>
+          <div class="field"><label for="f7">Message</label><textarea class="textarea" id="f7" placeholder="What would you like to discuss?"></textarea></div>
+          <label class="check"><input type="checkbox"> It is OK for Mobve to contact me about this request.</label>
+        </div>
+        <p class="doc-note">Input height 44 px, 16 px text (prevents zoom on iPhone), border in the muted gray <code>#536173</code> at 6.32:1. Labels sit above the field and are never replaced by a placeholder. Required fields say "(required)" in text, not only with an asterisk. Errors use the danger color plus an icon and a sentence.</p>
+      </div>
+
+      <div class="doc-demo">
+        <h3>Badge</h3>
+        <div class="doc-row">
+          <span class="badge">Normal</span><span class="badge badge--primary">Assigned</span><span class="badge badge--secondary">Recommended</span><span class="badge badge--success">Completed</span><span class="badge badge--warning">Needs attention</span><span class="badge badge--danger">Overdue</span><span class="badge badge--primary">Illustrative data</span>
+        </div>
+      </div>
+
+      <div class="doc-demo">
+        <h3>Chart series and legend</h3>
+        <div class="legend"><span class="legend__item">Current, Received</span><span class="legend__item legend__item--success">Completed</span><span class="legend__item legend__item--warning">Waiting on parts</span><span class="legend__item legend__item--danger">Overdue</span><span class="legend__item legend__item--line">Average, target</span></div>
+        <div class="doc-scroll"><table class="table">
+          <thead><tr><th>Series</th><th>Color</th><th>Form</th><th>Why</th></tr></thead>
+          <tbody>
+            <tr><td>Main measure (Current, Received, Calls)</td><td><code>--color-primary</code></td><td>Bars or a solid line</td><td>5.69:1 on paper, the brand color for the main number</td></tr>
+            <tr><td>Outcomes (Completed, Resolved)</td><td><code>--color-success</code></td><td>Bars or a 3 px line</td><td>Same meaning as the success badge; 3.39:1 on paper</td></tr>
+            <tr><td>Waiting, on hold</td><td><code>--color-warning</code></td><td>Bars only, always with the legend</td><td>2.06:1 on paper is too low for thin lines</td></tr>
+            <tr><td>Overdue, failed, missed</td><td><code>--color-danger</code></td><td>Bars or a line</td><td>4.75:1 on paper</td></tr>
+            <tr><td>Reference (Average call duration, target)</td><td><code>--color-muted</code></td><td>2.5 px dashed line with dot markers</td><td>6.32:1 on paper; dashed so it reads as a reference, not a measure</td></tr>
+            <tr><td>A second measure of the same kind</td><td><code>--color-secondary</code></td><td>Bars only, with the legend</td><td>1.54:1 on paper, never a thin line</td></tr>
+            <tr><td>Appointment purposes</td><td>Category colors</td><td>Bars, dots, event edges</td><td>See the category table</td></tr>
+          </tbody>
+        </table></div>
+        <p class="doc-note">Legend markers are 14 px squares (22 px dashes for lines) with 14 px labels. The current app uses 11 px squares with 9 to 10 px labels.</p>
+      </div>
+
+      <div class="doc-demo">
+        <h3>Category tag and calendar event</h3>
+        <div class="doc-row"><span class="cat cat--tour">Tour</span><span class="cat cat--lease">Lease</span><span class="cat cat--inspection">Inspection</span><span class="cat cat--billing">Billing</span><span class="cat cat--maintenance">Maintenance</span><span class="cat">General</span></div>
+        <div class="doc-cards">
+          <div class="event event--tour"><b>10:00 Tour</b><span>Raicelle · Maple Grove Commons</span></div>
+          <div class="event event--lease"><b>11:30 Lease signing</b><span>Unit 208 · Riverwalk Court</span></div>
+          <div class="event event--inspection"><b>14:00 Move-in inspection</b><span>Unit 104 · Juno Village</span></div>
+          <div class="event event--billing"><b>15:00 Billing consultation</b><span>Unit 702 · Riverwalk Court</span></div>
+          <div class="event event--maintenance"><b>16:30 Maintenance visit</b><span>Unit 202 · Maple Grove Commons</span></div>
+        </div>
+        <p class="doc-note">The category color appears as the dot and the 4 px event edge. The background is the same color at 12 percent and the text is ink (about 14.5:1). "General" uses the muted gray.</p>
+      </div>
+
+      <div class="doc-demo">
+        <h3>Tabs</h3>
+        <div class="tabs" role="tablist" aria-label="Scenario">
+          <button class="tab" role="tab" type="button" aria-selected="true" id="t1">The resident</button>
+          <button class="tab" role="tab" type="button" aria-selected="false" id="t2">The team</button>
+          <button class="tab" role="tab" type="button" aria-selected="false" id="t3">The manager</button>
+        </div>
+        <p id="tabtext">A returning issue should come with its history. Connect the new conversation to the previous request.</p>
+        <p class="doc-note">Selected: primary text and a 2 px underline. Hover: ink text and a gray underline. No lift, so the row does not jump.</p>
+      </div>
+
+      <div class="doc-demo">
+        <h3>Accordion</h3>
+        <div class="accordion">
+          <details><summary>What can I try in the live demo?</summary><p>A one-minute call with Jenny about a fictional property.</p></details>
+          <details><summary>Does Mobve replace my current management software?</summary><p>No. It connects conversations to the systems you already use.</p></details>
+          <details><summary>How much does a pilot cost?</summary><p>Pricing is proposed and confirmed per pilot.</p></details>
+        </div>
+        <p class="doc-note">Questions get a hover color and a "+" and "−" marker, the same pattern as "See all features".</p>
+      </div>
+
+      <div class="doc-demo">
+        <h3>Card</h3>
+        <div class="doc-cards">
+          <div class="card"><h3>Static</h3><p>Shadow level 1. Not clickable, so it has no hover.</p></div>
+          <a class="card card--interactive" href="#components"><h3>Interactive</h3><p>A link. Hover lifts 2 px and goes to shadow level 2.</p></a>
+          <a class="card card--interactive is-hover" href="#components"><h3>Interactive, hover</h3><p>The forced hover state.</p></a>
+          <div class="card card--featured"><span class="badge badge--secondary">Recommended</span><h3 style="margin-top:var(--space-3)">Featured</h3><p>Primary border, shadow level 2 and a secondary badge.</p></div>
+        </div>
+        <p class="doc-note">Cards that look clickable must be links. The eight property-type cards on the site are static today, so they should drop the card hover look or link to a page.</p>
+      </div>
+
+      <div class="doc-demo">
+        <h3>Notice</h3>
+        <div class="doc-notices"><div class="notice notice--info" role="status"><svg aria-hidden="true"><use href="#i-info"/></svg><div><strong>Heads up</strong><span class="notice__body">Information the person can use right now.</span></div></div><div class="notice notice--success" role="status"><svg aria-hidden="true"><use href="#i-check"/></svg><div><strong>Request sent</strong><span class="notice__body">We saved your message and will reply by email.</span></div></div><div class="notice notice--warning" role="status"><svg aria-hidden="true"><use href="#i-warn"/></svg><div><strong>The live demo is not open yet</strong><span class="notice__body">Request early access and we will tell you when it is.</span></div></div><div class="notice notice--danger" role="status"><svg aria-hidden="true"><use href="#i-x"/></svg><div><strong>We could not send your message</strong><span class="notice__body">Check your connection and try again. Your text is still in the form.</span></div></div></div>
+        <p class="doc-note">Light tint, a border in the signal color, dark text and a matching icon. Color is never the only signal. The explanation text uses ink for body-level contrast.</p>
+      </div>
+
+      <div class="doc-demo">
+        <h3>Table</h3>
+        <div class="doc-scroll"><table class="table">
+          <caption>Maintenance requests (example)</caption>
+          <thead><tr><th>Request</th><th>Property</th><th>Issue</th><th>Stage</th></tr></thead>
+          <tbody>
+            <tr><td>CALL-0A8DB8A5</td><td>Maple Grove Commons</td><td>Toilet leaking in unit 202</td><td><span class="badge badge--primary">Assigned</span></td></tr>
+            <tr class="is-hover"><td>CALL-BE001E08</td><td>Maple Grove Commons</td><td>Door does not lock</td><td><span class="badge badge--warning">New</span></td></tr>
+            <tr><td>CALL-DBF0B3FB</td><td>Riverwalk Court</td><td>Refrigerator not working</td><td><span class="badge badge--primary">In progress</span></td></tr>
+          </tbody>
+        </table></div>
+        <p class="doc-note">Rows highlight on hover in 100 ms. The wide-table wrapper scrolls inside itself, is keyboard focusable and has a label, as the app already does.</p>
+      </div>
+
+      <div class="doc-demo">
+        <h3>Empty state</h3>
+        <div class="empty">
+          <h3>No calls match these filters</h3>
+          <p>Try a different date range or property. New calls will appear after Mobve records them.</p>
+          <button class="btn btn--secondary" type="button">Reset filters</button>
+        </div>
+      </div>
+    </section>
+
+    <section class="doc-sec" id="patterns" aria-labelledby="h-pat">
+      <h2 id="h-pat">Page patterns</h2>
+      <p>Four compositions that use only the tokens above. They address findings from the audit: a smaller hero action, an unavailable demo that looks active, no pricing emphasis and no working contact path.</p>
+
+      <div class="doc-frame">
+        <div class="doc-frame__bar">Hero</div>
+        <div class="doc-frame__body">
+          <div class="doc-hero">
+            <div class="doc-hero__copy">
+              <span class="eyebrow">Voice AI for property operations</span>
+              <h1>Know why residents call. <span style="color:var(--color-primary)">Own what's next.</span></h1>
+              <p class="lead">Every conversation becomes <span class="mark">a clear next step</span>.</p>
+              <div class="doc-row"><a class="btn btn--primary" href="#patterns">Request early access</a><a class="btn btn--ghost" href="#patterns">See how it works</a></div>
+              <span class="caption">English and Spanish · Property-aware intake · Human handoff</span>
+            </div>
+            <div class="card">
+              <div class="doc-row" style="justify-content:space-between"><b>Operations overview</b><span class="badge badge--primary">Illustrative data</span></div>
+              <div class="doc-kpi" style="margin-top:var(--space-4)">
+                <div><span class="caption">Conversations</span><b>184</b><span class="caption">Across your portfolio</span></div>
+                <div><span class="caption">First-contact resolution</span><b>71%</b><span class="caption">Illustrative cohort</span></div>
+                <div><span class="caption">Open follow-ups</span><b>7</b><span class="caption">With assigned owners</span></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="doc-frame">
+        <div class="doc-frame__bar">Pricing, with one recommended plan (the choice of plan is an example, the owner decides)</div>
+        <div class="doc-frame__body">
+          <div class="doc-price">
+            <div class="card"><h3>Essentials</h3><div class="amt">$99 <small>/ month</small></div><span class="caption">Up to 100 units · 5 staff</span><ul><li>Staff workspace</li><li>Operations dashboards</li><li>Request queues</li></ul><a class="btn btn--secondary" href="#patterns">Choose Essentials</a></div>
+            <div class="card card--featured"><span class="badge badge--secondary" style="width:fit-content">Recommended</span><h3>AI Operations</h3><div class="amt">$349 <small>/ month</small></div><span class="caption">Up to 300 units · 15 staff</span><ul><li>24/7 AI answering</li><li>500 AI minutes included</li><li>Call summaries and transcripts</li></ul><a class="btn btn--primary" href="#patterns">Choose AI Operations</a></div>
+            <div class="card"><h3>Portfolio</h3><div class="amt">$999 <small>/ month</small></div><span class="caption">Up to 1,000 units · 50 staff</span><ul><li>1,500 pooled AI minutes</li><li>3 departmental agents</li><li>Reporting</li></ul><a class="btn btn--secondary" href="#patterns">Choose Portfolio</a></div>
+            <div class="card"><h3>Enterprise</h3><div class="amt">Custom</div><span class="caption">Larger or complex portfolios</span><ul><li>Agreed capacity</li><li>Custom workflows</li><li>Rollout support</li></ul><a class="btn btn--secondary" href="#patterns">Talk to us</a></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="doc-frame">
+        <div class="doc-frame__bar">Demo section when the live call is not available</div>
+        <div class="on-dark" style="padding:var(--space-6) var(--space-5)">
+          <div class="doc-demo-card">
+            <span class="eyebrow">A small property. A real conversation.</span>
+            <h3>One minute. Your questions.</h3>
+            <p class="lead">Hear how Jenny handles a rent question for a fictional property.</p>
+            <div class="notice notice--warning" role="status"><svg aria-hidden="true"><use href="#i-warn"/></svg><div><strong>The live demo is not open yet</strong><span class="notice__body">Request early access and we will tell you when it opens.</span></div></div>
+            <div class="doc-row"><button class="btn btn--inverse" type="button" disabled>Call Jenny</button><a class="btn btn--ghost" style="color:var(--color-secondary)" href="#patterns">Request early access</a></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="doc-frame">
+        <div class="doc-frame__bar">Contact form (works without the chat). Try it: empty fields show errors, valid data shows the confirmation.</div>
+        <div class="doc-frame__body">
+          <form class="doc-form" id="cf" novalidate>
+            <div class="field"><label for="cn" class="req">Name</label><input class="input" id="cn" name="name" type="text" autocomplete="name"><span class="field__error" id="cn-e" hidden><svg aria-hidden="true" width="16" height="16" style="flex:none"><use href="#i-x"/></svg>Enter your name.</span></div>
+            <div class="field"><label for="ce" class="req">Work email</label><input class="input" id="ce" name="email" type="email" autocomplete="email"><span class="field__error" id="ce-e" hidden><svg aria-hidden="true" width="16" height="16" style="flex:none"><use href="#i-x"/></svg>Enter an email like name@company.com.</span></div>
+            <div class="field"><label for="cp">Phone</label><input class="input" id="cp" name="phone" type="tel" autocomplete="tel" inputmode="tel"><span class="field__hint">Optional.</span></div>
+            <div class="field"><label for="cm">What would you like to discuss?</label><textarea class="textarea" id="cm" name="message" maxlength="500"></textarea><span class="field__hint">Up to 500 characters.</span></div>
+            <div class="field"><label class="check"><input type="checkbox" id="cc"> It is OK for Mobve to contact me about this request.</label><span class="field__error" id="cc-e" hidden><svg aria-hidden="true" width="16" height="16" style="flex:none"><use href="#i-x"/></svg>Confirm so we can reply.</span></div>
+            <div class="doc-row"><button class="btn btn--primary" type="submit">Send request</button><button class="btn btn--ghost" type="reset">Clear</button></div>
+            <div id="cf-ok" hidden><div class="notice notice--success" role="status"><svg aria-hidden="true"><use href="#i-check"/></svg><div><strong>Request sent</strong><span class="notice__body">We saved your message and will reply by email.</span></div></div></div>
+          </form>
+        </div>
+      </div>
+    </section>
+
+    <section class="doc-sec" id="a11y" aria-labelledby="h-a11y">
+      <h2 id="h-a11y">Accessibility</h2>
+      <p>Target: WCAG 2.2 AA. Every text pair below is calculated from the exact hex values.</p>
+      <div class="doc-rules">
+        <div class="doc-rule"><b>Contrast</b><span>Text 4.5:1 or more. Controls and borders 3:1 or more.</span></div>
+        <div class="doc-rule"><b>Touch targets</b><span>44 px high. 36 px only for dense tables used with a mouse.</span></div>
+        <div class="doc-rule"><b>Focus</b><span>2 px solid, offset 2 px, primary (secondary yellow on the dark band). Never removed.</span></div>
+        <div class="doc-rule"><b>Reduced motion</b><span>Transitions drop to 0.01 ms and lifts are removed.</span></div>
+        <div class="doc-rule"><b>Minimum text</b><span>12 px. Captions, hints and legal text included.</span></div>
+        <div class="doc-rule"><b>Labels</b><span>Visible label above every field. Placeholders are examples only.</span></div>
+      </div>
+      <h3 class="doc-sub">Text pairs</h3>
+      <div class="doc-scroll"><table class="table">
+        <thead><tr><th>Use</th><th>Foreground</th><th>Background</th><th>Ratio</th><th>Level</th></tr></thead>
+        <tbody><tr><td>Body text</td><td><span class='doc-dot' style='background:#101b2b'></span><code>#101b2b</code></td><td><span class='doc-dot' style='background:#ffffff;border:1px solid var(--color-divider)'></span><code>#ffffff</code></td><td>17.3:1</td><td>AAA</td></tr><tr><td>Body text on the background</td><td><span class='doc-dot' style='background:#101b2b'></span><code>#101b2b</code></td><td><span class='doc-dot' style='background:#fafafa;border:1px solid var(--color-divider)'></span><code>#fafafa</code></td><td>16.58:1</td><td>AAA</td></tr><tr><td>Secondary text and placeholder</td><td><span class='doc-dot' style='background:#536173'></span><code>#536173</code></td><td><span class='doc-dot' style='background:#ffffff;border:1px solid var(--color-divider)'></span><code>#ffffff</code></td><td>6.32:1</td><td>AA</td></tr><tr><td>Secondary text on the background</td><td><span class='doc-dot' style='background:#536173'></span><code>#536173</code></td><td><span class='doc-dot' style='background:#fafafa;border:1px solid var(--color-divider)'></span><code>#fafafa</code></td><td>6.05:1</td><td>AA</td></tr><tr><td>Link, eyebrow, selected tab</td><td><span class='doc-dot' style='background:#0b63ce'></span><code>#0b63ce</code></td><td><span class='doc-dot' style='background:#ffffff;border:1px solid var(--color-divider)'></span><code>#ffffff</code></td><td>5.69:1</td><td>AA</td></tr><tr><td>Link on the background</td><td><span class='doc-dot' style='background:#0b63ce'></span><code>#0b63ce</code></td><td><span class='doc-dot' style='background:#fafafa;border:1px solid var(--color-divider)'></span><code>#fafafa</code></td><td>5.45:1</td><td>AA</td></tr><tr><td>Primary button label</td><td><span class='doc-dot' style='background:#ffffff'></span><code>#ffffff</code></td><td><span class='doc-dot' style='background:#0b63ce;border:1px solid var(--color-divider)'></span><code>#0b63ce</code></td><td>5.69:1</td><td>AA</td></tr><tr><td>Primary button hover</td><td><span class='doc-dot' style='background:#ffffff'></span><code>#ffffff</code></td><td><span class='doc-dot' style='background:#094da1;border:1px solid var(--color-divider)'></span><code>#094da1</code></td><td>8.11:1</td><td>AAA</td></tr><tr><td>Primary button pressed</td><td><span class='doc-dot' style='background:#ffffff'></span><code>#ffffff</code></td><td><span class='doc-dot' style='background:#063773;border:1px solid var(--color-divider)'></span><code>#063773</code></td><td>11.66:1</td><td>AAA</td></tr><tr><td>Secondary button on hover</td><td><span class='doc-dot' style='background:#094da1'></span><code>#094da1</code></td><td><span class='doc-dot' style='background:#e7effa;border:1px solid var(--color-divider)'></span><code>#e7effa</code></td><td>7.0:1</td><td>AAA</td></tr><tr><td>Selected badge and information notice</td><td><span class='doc-dot' style='background:#0b63ce'></span><code>#0b63ce</code></td><td><span class='doc-dot' style='background:#e7effa;border:1px solid var(--color-divider)'></span><code>#e7effa</code></td><td>4.91:1</td><td>AA</td></tr><tr><td>Highlight and featured badge</td><td><span class='doc-dot' style='background:#101b2b'></span><code>#101b2b</code></td><td><span class='doc-dot' style='background:#ffc845;border:1px solid var(--color-divider)'></span><code>#ffc845</code></td><td>11.21:1</td><td>AAA</td></tr><tr><td>Danger button label</td><td><span class='doc-dot' style='background:#ffffff'></span><code>#ffffff</code></td><td><span class='doc-dot' style='background:#d73431;border:1px solid var(--color-divider)'></span><code>#d73431</code></td><td>4.75:1</td><td>AA</td></tr><tr><td>Danger button hover</td><td><span class='doc-dot' style='background:#ffffff'></span><code>#ffffff</code></td><td><span class='doc-dot' style='background:#a82926;border:1px solid var(--color-divider)'></span><code>#a82926</code></td><td>6.98:1</td><td>AA</td></tr><tr><td>Inverse button label</td><td><span class='doc-dot' style='background:#101b2b'></span><code>#101b2b</code></td><td><span class='doc-dot' style='background:#ffffff;border:1px solid var(--color-divider)'></span><code>#ffffff</code></td><td>17.3:1</td><td>AAA</td></tr><tr><td>Text on the dark band</td><td><span class='doc-dot' style='background:#ffffff'></span><code>#ffffff</code></td><td><span class='doc-dot' style='background:#101b2b;border:1px solid var(--color-divider)'></span><code>#101b2b</code></td><td>17.3:1</td><td>AAA</td></tr><tr><td>Secondary text on the dark band</td><td><span class='doc-dot' style='background:#bcbfc4'></span><code>#bcbfc4</code></td><td><span class='doc-dot' style='background:#101b2b;border:1px solid var(--color-divider)'></span><code>#101b2b</code></td><td>9.38:1</td><td>AAA</td></tr><tr><td>Eyebrow and links on the dark band</td><td><span class='doc-dot' style='background:#ffc845'></span><code>#ffc845</code></td><td><span class='doc-dot' style='background:#101b2b;border:1px solid var(--color-divider)'></span><code>#101b2b</code></td><td>11.21:1</td><td>AAA</td></tr><tr><td>Success badge and notice</td><td><span class='doc-dot' style='background:#09672e'></span><code>#09672e</code></td><td><span class='doc-dot' style='background:#e1f4e9;border:1px solid var(--color-divider)'></span><code>#e1f4e9</code></td><td>6.12:1</td><td>AA</td></tr><tr><td>Warning badge and notice</td><td><span class='doc-dot' style='background:#7d5002'></span><code>#7d5002</code></td><td><span class='doc-dot' style='background:#fef0d8;border:1px solid var(--color-divider)'></span><code>#fef0d8</code></td><td>6.18:1</td><td>AA</td></tr><tr><td>Error badge and notice</td><td><span class='doc-dot' style='background:#a12623'></span><code>#a12623</code></td><td><span class='doc-dot' style='background:#fbebea;border:1px solid var(--color-divider)'></span><code>#fbebea</code></td><td>6.45:1</td><td>AA</td></tr><tr><td>Secondary button pressed</td><td><span class='doc-dot' style='background:#094da1'></span><code>#094da1</code></td><td><span class='doc-dot' style='background:#c4daf3;border:1px solid var(--color-divider)'></span><code>#c4daf3</code></td><td>5.67:1</td><td>AA</td></tr><tr><td>Ink on the warning signal</td><td><span class='doc-dot' style='background:#101b2b'></span><code>#101b2b</code></td><td><span class='doc-dot' style='background:#f7a30d;border:1px solid var(--color-divider)'></span><code>#f7a30d</code></td><td>8.4:1</td><td>AAA</td></tr><tr><td>Error message under a field</td><td><span class='doc-dot' style='background:#a12623'></span><code>#a12623</code></td><td><span class='doc-dot' style='background:#ffffff;border:1px solid var(--color-divider)'></span><code>#ffffff</code></td><td>7.45:1</td><td>AAA</td></tr></tbody>
+      </table></div>
+      <h3 class="doc-sub">Controls and graphics</h3>
+      <div class="doc-scroll"><table class="table">
+        <thead><tr><th>Use</th><th>Color</th><th>Against</th><th>Ratio</th><th>Result</th></tr></thead>
+        <tbody><tr><td>Control border (muted) on paper</td><td><code>#536173</code></td><td><code>#ffffff</code></td><td>6.32:1</td><td>Pass (3:1)</td></tr><tr><td>Control border (muted) on the background</td><td><code>#536173</code></td><td><code>#fafafa</code></td><td>6.05:1</td><td>Pass (3:1)</td></tr><tr><td>Error border on paper</td><td><code>#d73431</code></td><td><code>#ffffff</code></td><td>4.75:1</td><td>Pass (3:1)</td></tr><tr><td>Success signal on paper (graphics)</td><td><code>#03a14a</code></td><td><code>#ffffff</code></td><td>3.39:1</td><td>Pass (3:1)</td></tr><tr><td>Warning signal on paper: never alone, always with its label</td><td><code>#f7a30d</code></td><td><code>#ffffff</code></td><td>2.06:1</td><td>Fail (3:1)</td></tr><tr><td>Focus ring on paper</td><td><code>#0b63ce</code></td><td><code>#ffffff</code></td><td>5.69:1</td><td>Pass (3:1)</td></tr><tr><td>Focus ring on the dark band</td><td><code>#ffc845</code></td><td><code>#101b2b</code></td><td>11.21:1</td><td>Pass (3:1)</td></tr><tr><td>Secondary on paper: fills under ink text, or chart bars with a legend</td><td><code>#ffc845</code></td><td><code>#ffffff</code></td><td>1.54:1</td><td>Fail (3:1)</td></tr></tbody>
+      </table></div>
+    </section>
+
+    <section class="doc-sec" id="migrate" aria-labelledby="h-mig">
+      <h2 id="h-mig">Migration map</h2>
+      <p>What changes on the existing pages. Values on the left were measured on the live site and app.</p>
+      <div class="doc-scroll"><table class="table">
+        <thead><tr><th>Item</th><th>Today</th><th>Proposed</th></tr></thead>
+        <tbody><tr><td><b>H1</b></td><td>70 px, line 1.06, tracking -0.055em, weight 620</td><td>64 px max (fluid, 40 px on phones), 1.08, -0.02em, 600</td></tr><tr><td><b>H2</b></td><td>46 px (three sections) and 32 px weight 500 in one</td><td>44 px max (fluid, 32 px on phones), 1.12, -0.02em, 600, same everywhere</td></tr><tr><td><b>H3</b></td><td>34, 24 and 22 px</td><td>24 px, 1.25, -0.01em, 600</td></tr><tr><td><b>Lead</b></td><td>21 px, line 1.55</td><td>20 px, 1.45</td></tr><tr><td><b>Body</b></td><td>15 and 16 px, line 1.6 and 1.8</td><td>16 px, line 1.5, 65 characters per line at most</td></tr><tr><td><b>Section label</b></td><td>10 px, +0.12em, weight 750</td><td>12 px, +0.08em, weight 600</td></tr><tr><td><b>Captions and notes</b></td><td>9 to 10 px</td><td>12 px</td></tr><tr><td><b>Buttons</b></td><td>12 to 13 px, weight 650</td><td>15 px, weight 600, 44 px high</td></tr><tr><td><b>Menu and footer links</b></td><td>13 px and 12 px</td><td>14 px</td></tr><tr><td><b>Font</b></td><td>System font on the website (Inter named, never loaded). Inter Variable in the app</td><td>Inter Variable self-hosted on both</td></tr><tr><td><b>Font weights</b></td><td>400, 500, 550, 600, 620, 650, 700, 750</td><td>400, 500, 600</td></tr><tr><td><b>Color variables</b></td><td>30 on the website theme: 8 neutrals, 7 brand and action, 4 dark band, 9 semantic, 2 focus</td><td>6 base colors and 3 semantic signals with their text chosen; 11 calculated from them</td></tr><tr><td><b>Blues</b></td><td>#0878f9, #075cae, #0a88db, #0878c4, #0875bd, #0867a6</td><td>One primary #0b63ce for the logo, actions and information</td></tr><tr><td><b>Accent</b></td><td>None</td><td>Secondary #ffc845 for highlights, featured items, charts and the dark band</td></tr><tr><td><b>Neutrals</b></td><td>ink, muted, subtle, line, line-strong, canvas, soft, surface</td><td>ink, paper, gray #536173 for secondary text and borders, background #fafafa; divider and tint are calculated</td></tr><tr><td><b>Dark band</b></td><td>navy #071e3a</td><td>ink #101b2b</td></tr><tr><td><b>Semantic</b></td><td>Dark tones #166534, #854d0e, #b42318 with pale backgrounds</td><td>Traffic-light signals (#03a14a, #f7a30d, #d73431), same-hue text (#09672e, #7d5002, #a12623) and light tints</td></tr><tr><td><b>Button states</b></td><td>Hover 15 percent darker, pressed 30 percent darker: hard to tell apart</td><td>Hover 22 percent darker, lifts 1 px with a shadow; pressed 44 percent darker, sinks 1 px with an inner shadow</td></tr><tr><td><b>Appointment categories</b></td><td>Tour #2a78d6, Lease #8654b3, Inspection #167a77, Billing #5956c9, Maintenance #b54242</td><td>Tour #0891c9, Lease #794db6, Inspection #6a7a31, Billing #b55fba, Maintenance #864821</td></tr><tr><td><b>Hints and placeholders</b></td><td>#a3a3a3 on white in the app (2.5:1)</td><td>Muted #536173 (6.32:1)</td></tr><tr><td><b>Radii</b></td><td>6, 7, 8, 10, 14, 20, 23, 30 px and 50 percent</td><td>8 px, 14 px, pill; circles stay 50 percent</td></tr><tr><td><b>Section spacing</b></td><td>80 px, 50 px and 42 px</td><td>--section-y: 48 px on phones to 80 px on desktop</td></tr><tr><td><b>Hover and pressed</b></td><td>Missing on footer, FAQ, language buttons, chat button, app secondary buttons. No pressed state</td><td>Defined for every control (see Components)</td></tr><tr><td><b>Touch targets</b></td><td>21 to 36 px high in menus and utility links</td><td>44 px minimum; 36 px only for dense tables with a mouse</td></tr></tbody>
+      </table></div>
+    </section>
+
+    <section class="doc-sec" id="css" aria-labelledby="h-css">
+      <h2 id="h-css">CSS</h2>
+      <p>The complete values. The same file ships as <code>mobve-design-system.css</code>. Load order: font, tokens, base and components, then page styles.</p>
+      <div class="doc-copy"><h3 class="doc-sub" style="margin:0">Tokens</h3><button class="btn btn--secondary btn--compact" type="button" data-copy="code-tokens">Copy tokens</button></div>
+      <pre class="code" id="code-tokens" tabindex="0" aria-label="Tokens CSS">/* Mobve design system, proposal v1 (2026-11-03)
+   Source of values: measured on mobve.com and the staff app, brand.html colors kept.
+   One token layer for the website and the app. */
+
+/* Font: self-host Inter Variable (the site CSP is default-src &#x27;self&#x27;, so a Google Fonts link would be blocked).
+@font-face {
+  font-family: &quot;Inter Variable&quot;;
+  src: url(&quot;/assets/fonts/InterVariable.woff2&quot;) format(&quot;woff2&quot;);
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+}
+*/
+
+:root {
+  /* Color, chosen: base colors (route A). Muted is the gray for secondary text and control borders; bg is the page background under white surfaces, as in the current app */
+  --color-primary: #0b63ce;
+  --color-secondary: #ffc845;
+  --color-ink: #101b2b;
+  --color-paper: #ffffff;
+  --color-muted: #536173;
+  --color-bg: #fafafa;
+
+  /* Color, chosen: semantic signals from traffic lights (green, amber, red) and a dark text in the same hue */
+  --color-success: #03a14a;
+  --color-success-text: #09672e;
+  --color-warning: #f7a30d;
+  --color-warning-text: #7d5002;
+  --color-danger: #d73431;
+  --color-danger-text: #a12623;
+
+  /* Color, chosen: appointment categories. Hues kept clear of brand and semantic colors, at least 0.12 apart */
+  --color-cat-tour: #0891c9;
+  --color-cat-lease: #794db6;
+  --color-cat-inspection: #6a7a31;
+  --color-cat-billing: #b55fba;
+  --color-cat-maintenance: #864821;
+
+  /* Color, calculated from the above, not chosen */
+  --color-divider: color-mix(in srgb, var(--color-muted) 20%, var(--color-paper));
+  --color-tint: color-mix(in srgb, var(--color-primary) 10%, var(--color-paper));
+  --color-tint-strong: color-mix(in srgb, var(--color-primary) 24%, var(--color-paper));
+  --color-primary-hover: color-mix(in srgb, var(--color-primary), black 22%);
+  --color-primary-active: color-mix(in srgb, var(--color-primary), black 44%);
+  --color-on-dark-muted: color-mix(in srgb, var(--color-paper) 72%, var(--color-ink));
+  --color-success-tint: color-mix(in srgb, var(--color-success) 12%, var(--color-paper));
+  --color-warning-tint: color-mix(in srgb, var(--color-warning) 16%, var(--color-paper));
+  --color-danger-tint: color-mix(in srgb, var(--color-danger) 10%, var(--color-paper));
+  --color-danger-hover: color-mix(in srgb, var(--color-danger), black 22%);
+  --color-danger-active: color-mix(in srgb, var(--color-danger), black 44%);
+
+  /* Type */
+  --font-sans: &quot;Inter Variable&quot;, &quot;Inter&quot;, system-ui, -apple-system, &quot;Segoe UI&quot;, Roboto, Arial, sans-serif;
+  --fw-regular: 400;
+  --fw-medium: 500;
+  --fw-semibold: 600;
+  --fs-caption: 0.75rem;
+  --fs-ui: 0.875rem;
+  --fs-button: 0.9375rem;
+  --fs-body: 1rem;
+  --fs-lead: 1.25rem;
+  --fs-h3: 1.5rem;
+  --fs-h2: clamp(2rem, 1.5rem + 2vw, 2.75rem);
+  --fs-h1: clamp(2.5rem, 1.75rem + 3.2vw, 4rem);
+  --lh-h1: 1.08;
+  --lh-h2: 1.12;
+  --lh-h3: 1.25;
+  --lh-lead: 1.45;
+  --lh-body: 1.5;
+  --lh-ui: 1.4;
+  --lh-caption: 1.4;
+  --ls-h1: -0.02em;
+  --ls-h2: -0.02em;
+  --ls-h3: -0.01em;
+  --ls-eyebrow: 0.08em;
+  --measure: 65ch;
+
+  /* Space: 4 px base */
+  --space-1: 0.25rem;
+  --space-2: 0.5rem;
+  --space-3: 0.75rem;
+  --space-4: 1rem;
+  --space-5: 1.5rem;
+  --space-6: 2rem;
+  --space-7: 3rem;
+  --space-8: 4rem;
+  --space-9: 6rem;
+
+  /* Layout */
+  --container: 1240px;
+  --gutter: clamp(1rem, 4vw, 2rem);
+  --section-y: clamp(3rem, 2rem + 4vw, 5rem);
+
+  /* Shape */
+  --radius-sm: 8px;
+  --radius-md: 14px;
+  --radius-pill: 999px;
+
+  /* Elevation */
+  --shadow-1: 0 1px 2px rgba(16, 27, 43, 0.06), 0 1px 1px rgba(16, 27, 43, 0.04);
+  --shadow-2: 0 4px 12px rgba(16, 27, 43, 0.08);
+  --shadow-3: 0 12px 32px rgba(16, 27, 43, 0.12);
+  --shadow-press: inset 0 2px 4px rgba(16, 27, 43, 0.28);
+  --shadow-4: 0 24px 64px rgba(16, 27, 43, 0.2);
+
+  /* Motion */
+  --dur-instant: 100ms;
+  --dur-fast: 200ms;
+  --dur-base: 300ms;
+  --dur-slow: 500ms;
+  --ease-standard: cubic-bezier(0.4, 0, 0.2, 1);
+  --ease-emphasized: cubic-bezier(0.2, 0.6, 0.3, 1);
+
+  /* Controls */
+  --control-h: 44px;
+  --control-h-compact: 36px;
+  --disabled-opacity: 0.38;
+}
+
+/* Breakpoints (media queries cannot read variables): 480, 768, 1024, 1280 px */
+</pre>
+      <div class="doc-copy"><h3 class="doc-sub" style="margin:0">Base and components</h3><button class="btn btn--secondary btn--compact" type="button" data-copy="code-comp">Copy base and components</button></div>
+      <pre class="code" id="code-comp" tabindex="0" aria-label="Base and components CSS">/* Base */
+html { font-family: var(--font-sans); font-size: 100%; color: var(--color-ink); background: var(--color-bg); -webkit-text-size-adjust: 100%; }
+body { margin: 0; font-size: var(--fs-body); line-height: var(--lh-body); font-weight: var(--fw-regular); font-optical-sizing: auto; }
+h1, h2, h3 { margin: 0; font-weight: var(--fw-semibold); text-wrap: balance; }
+h1 { font-size: var(--fs-h1); line-height: var(--lh-h1); letter-spacing: var(--ls-h1); }
+h2 { font-size: var(--fs-h2); line-height: var(--lh-h2); letter-spacing: var(--ls-h2); }
+h3 { font-size: var(--fs-h3); line-height: var(--lh-h3); letter-spacing: var(--ls-h3); }
+p { max-width: var(--measure); margin: 0; }
+.lead { font-size: var(--fs-lead); line-height: var(--lh-lead); color: var(--color-muted); }
+.ui { font-size: var(--fs-ui); line-height: var(--lh-ui); font-weight: var(--fw-medium); }
+.caption { font-size: var(--fs-caption); line-height: var(--lh-caption); color: var(--color-muted); }
+.eyebrow { font-size: var(--fs-caption); line-height: var(--lh-caption); font-weight: var(--fw-semibold); letter-spacing: var(--ls-eyebrow); text-transform: uppercase; color: var(--color-primary); }
+a { color: var(--color-primary); text-underline-offset: 0.2em; transition: color var(--dur-fast) var(--ease-standard); }
+a:hover { color: var(--color-primary-hover); }
+:focus-visible { outline: 2px solid var(--color-primary); outline-offset: 2px; }
+.on-dark :focus-visible { outline-color: var(--color-secondary); }
+.on-dark { background: var(--color-ink); color: var(--color-paper); }
+.on-dark .lead, .on-dark .caption { color: var(--color-on-dark-muted); }
+.on-dark .eyebrow { color: var(--color-secondary); }
+.on-dark a:not(.btn) { color: var(--color-secondary); }
+.container { max-width: var(--container); margin-inline: auto; padding-inline: var(--gutter); }
+.section { padding-block: var(--section-y); }
+.section--alt { background: var(--color-paper); }
+
+/* Navigation link */
+.nav-link { display: inline-flex; align-items: center; min-height: var(--control-h); padding: 0 var(--space-3); color: var(--color-ink); font-size: var(--fs-ui); font-weight: var(--fw-medium); text-decoration: none; box-shadow: inset 0 -2px 0 transparent; transition: color var(--dur-fast) var(--ease-standard), box-shadow var(--dur-fast) var(--ease-standard); }
+.nav-link:hover, .nav-link.is-hover { color: var(--color-primary); box-shadow: inset 0 -2px 0 var(--color-primary); }
+.nav-link[aria-current=&quot;page&quot;] { color: var(--color-primary); box-shadow: inset 0 -2px 0 var(--color-primary); }
+
+/* Button */
+.btn { display: inline-flex; align-items: center; justify-content: center; gap: var(--space-2); min-height: var(--control-h); padding: 0 var(--space-5); border: 1px solid transparent; border-radius: var(--radius-sm); font: inherit; font-size: var(--fs-button); font-weight: var(--fw-semibold); line-height: 1; text-decoration: none; cursor: pointer; transition: background-color var(--dur-fast) var(--ease-standard), border-color var(--dur-fast) var(--ease-standard), color var(--dur-fast) var(--ease-standard), transform var(--dur-fast) var(--ease-standard), box-shadow var(--dur-fast) var(--ease-standard); }
+.btn--primary { background: var(--color-primary); color: var(--color-paper); }
+.btn--primary:hover, .btn--primary.is-hover { background: var(--color-primary-hover); color: var(--color-paper); transform: translateY(-1px); box-shadow: var(--shadow-2); }
+.btn--primary:active, .btn--primary.is-active { background: var(--color-primary-active); transform: translateY(1px); box-shadow: var(--shadow-press); }
+.btn--secondary { background: var(--color-paper); color: var(--color-primary); border-color: var(--color-primary); }
+.btn--secondary:hover, .btn--secondary.is-hover { background: var(--color-tint); color: var(--color-primary-hover); border-color: var(--color-primary-hover); transform: translateY(-1px); box-shadow: var(--shadow-2); }
+.btn--secondary:active, .btn--secondary.is-active { background: var(--color-tint-strong); color: var(--color-primary-hover); border-color: var(--color-primary-active); transform: translateY(1px); box-shadow: none; }
+.btn--ghost { background: transparent; color: var(--color-primary); }
+.btn--ghost:hover, .btn--ghost.is-hover { background: var(--color-tint); color: var(--color-primary-hover); }
+.btn--ghost:active, .btn--ghost.is-active { background: var(--color-tint-strong); color: var(--color-primary-hover); transform: translateY(1px); }
+.btn--danger { background: var(--color-danger); color: var(--color-paper); }
+.btn--danger:hover, .btn--danger.is-hover { background: var(--color-danger-hover); color: var(--color-paper); transform: translateY(-1px); box-shadow: var(--shadow-2); }
+.btn--danger:active, .btn--danger.is-active { background: var(--color-danger-active); transform: translateY(1px); box-shadow: var(--shadow-press); }
+.btn--inverse { background: var(--color-paper); color: var(--color-ink); }
+.btn--inverse:hover, .btn--inverse.is-hover { background: var(--color-tint); color: var(--color-ink); transform: translateY(-1px); box-shadow: var(--shadow-2); }
+.btn--inverse:active, .btn--inverse.is-active { background: var(--color-tint-strong); transform: translateY(1px); box-shadow: var(--shadow-press); }
+.btn--compact { min-height: var(--control-h-compact); padding: 0 var(--space-4); }
+.btn:disabled, .btn[aria-disabled=&quot;true&quot;], .btn.is-disabled { opacity: var(--disabled-opacity); cursor: not-allowed; transform: none; }
+.btn.is-loading { position: relative; color: transparent; pointer-events: none; }
+.btn.is-loading::after { content: &quot;&quot;; position: absolute; width: 18px; height: 18px; border: 2px solid var(--color-paper); border-right-color: transparent; border-radius: 50%; animation: spin 0.7s linear infinite; }
+.btn--secondary.is-loading::after, .btn--ghost.is-loading::after { border-color: var(--color-primary); border-right-color: transparent; }
+.is-focus { outline: 2px solid var(--color-primary); outline-offset: 2px; }
+.on-dark .is-focus { outline-color: var(--color-secondary); }
+@keyframes spin { to { transform: rotate(360deg); } }
+@media (pointer: coarse) { .btn--compact { min-height: var(--control-h); } }
+
+/* Form field */
+.field { display: grid; gap: var(--space-2); max-width: 28rem; }
+.field label { font-size: var(--fs-ui); line-height: var(--lh-ui); font-weight: var(--fw-medium); }
+.field .req::after { content: &quot; (required)&quot;; color: var(--color-muted); font-weight: var(--fw-regular); }
+.input, .select, .textarea { box-sizing: border-box; width: 100%; min-height: var(--control-h); padding: 0 var(--space-4); border: 1px solid var(--color-muted); border-radius: var(--radius-sm); background: var(--color-paper); color: var(--color-ink); font: inherit; font-size: var(--fs-body); transition: border-color var(--dur-fast) var(--ease-standard); }
+.textarea { padding: var(--space-3) var(--space-4); min-height: 6rem; resize: vertical; }
+.input::placeholder, .textarea::placeholder { color: var(--color-muted); }
+.input:hover, .select:hover, .textarea:hover, .input.is-hover { border-color: var(--color-ink); }
+.input:focus-visible, .select:focus-visible, .textarea:focus-visible { border-color: var(--color-primary); }
+.input[aria-invalid=&quot;true&quot;], .textarea[aria-invalid=&quot;true&quot;] { border-color: var(--color-danger); }
+.input:disabled, .select:disabled, .textarea:disabled { opacity: var(--disabled-opacity); background: var(--color-divider); cursor: not-allowed; }
+.field__hint { font-size: var(--fs-caption); line-height: var(--lh-caption); color: var(--color-muted); }
+.field__error { display: flex; gap: var(--space-2); align-items: flex-start; font-size: var(--fs-caption); line-height: var(--lh-caption); color: var(--color-danger-text); }
+
+/* Checkbox */
+.check { display: flex; gap: var(--space-3); align-items: flex-start; font-size: var(--fs-ui); line-height: var(--lh-ui); }
+.check input { flex: none; width: 20px; height: 20px; margin: 1px 0 0; accent-color: var(--color-primary); }
+
+/* Badge */
+.badge { display: inline-flex; align-items: center; gap: 6px; padding: 2px 10px; border-radius: var(--radius-pill); font-size: var(--fs-caption); line-height: var(--lh-caption); font-weight: var(--fw-semibold); background: var(--color-divider); color: var(--color-ink); }
+.badge::before { content: &quot;&quot;; width: 6px; height: 6px; border-radius: 50%; background: currentColor; }
+.badge--success { background: var(--color-success-tint); color: var(--color-success-text); }
+.badge--success::before { background: var(--color-success); }
+.badge--warning { background: var(--color-warning-tint); color: var(--color-warning-text); }
+.badge--warning::before { background: var(--color-warning); }
+.badge--danger { background: var(--color-danger-tint); color: var(--color-danger-text); }
+.badge--danger::before { background: var(--color-danger); }
+.badge--primary { background: var(--color-tint); color: var(--color-primary); }
+
+.badge--secondary { background: var(--color-secondary); color: var(--color-ink); }
+
+/* Category tag and calendar event: the category color marks, ink carries the text */
+.cat { --cat: var(--color-muted); display: inline-flex; align-items: center; gap: 6px; padding: 2px 10px; border-radius: var(--radius-pill); font-size: var(--fs-caption); line-height: var(--lh-caption); font-weight: var(--fw-semibold); background: color-mix(in srgb, var(--cat) 12%, var(--color-paper)); color: var(--color-ink); }
+.cat::before { content: &quot;&quot;; width: 8px; height: 8px; border-radius: 50%; background: var(--cat); }
+.event { --cat: var(--color-muted); display: grid; gap: 2px; padding: var(--space-2) var(--space-3); border-radius: var(--radius-sm); border-left: 4px solid var(--cat); background: color-mix(in srgb, var(--cat) 12%, var(--color-paper)); color: var(--color-ink); font-size: var(--fs-caption); line-height: var(--lh-caption); }
+.event b { font-size: var(--fs-ui); font-weight: var(--fw-semibold); }
+.cat--tour, .event--tour { --cat: var(--color-cat-tour); }
+.cat--lease, .event--lease { --cat: var(--color-cat-lease); }
+.cat--inspection, .event--inspection { --cat: var(--color-cat-inspection); }
+.cat--billing, .event--billing { --cat: var(--color-cat-billing); }
+.cat--maintenance, .event--maintenance { --cat: var(--color-cat-maintenance); }
+
+/* Chart legend. Series colors: main measure primary, outcomes semantic (completed = success), reference lines muted and dashed */
+.legend { display: flex; flex-wrap: wrap; gap: var(--space-2) var(--space-5); font-size: var(--fs-ui); line-height: var(--lh-ui); color: var(--color-ink); }
+.legend__item { --series: var(--color-primary); display: inline-flex; align-items: center; gap: var(--space-2); }
+.legend__item::before { content: &quot;&quot;; flex: none; width: 14px; height: 14px; border-radius: 3px; background: var(--series); }
+.legend__item--line { --series: var(--color-muted); }
+.legend__item--line::before { width: 22px; height: 0; border-radius: 0; background: none; border-top: 3px dashed var(--series); }
+.legend__item--success { --series: var(--color-success); }
+.legend__item--warning { --series: var(--color-warning); }
+.legend__item--danger { --series: var(--color-danger); }
+.legend__item--secondary { --series: var(--color-secondary); }
+
+/* Highlight */
+.mark { background: var(--color-secondary); color: var(--color-ink); padding: 0 0.2em; border-radius: 3px; }
+
+/* Card */
+.card { box-sizing: border-box; background: var(--color-paper); border: 1px solid var(--color-divider); border-radius: var(--radius-md); padding: var(--space-5); box-shadow: var(--shadow-1); }
+.card--interactive { display: block; color: inherit; text-decoration: none; transition: box-shadow var(--dur-fast) var(--ease-standard), transform var(--dur-fast) var(--ease-standard); }
+.card--interactive:hover, .card--interactive.is-hover { box-shadow: var(--shadow-2); transform: translateY(-2px); color: inherit; }
+.card--interactive:active, .card--interactive.is-active { box-shadow: var(--shadow-1); transform: translateY(0); }
+.card--featured { border-color: var(--color-primary); box-shadow: var(--shadow-2); }
+
+/* Tabs */
+.tabs { display: flex; gap: var(--space-2); border-bottom: 1px solid var(--color-divider); }
+.tab { min-height: var(--control-h); padding: 0 var(--space-4); border: 0; border-bottom: 2px solid transparent; margin-bottom: -1px; background: none; color: var(--color-muted); font: inherit; font-size: var(--fs-ui); font-weight: var(--fw-medium); cursor: pointer; transition: color var(--dur-fast) var(--ease-standard), border-color var(--dur-fast) var(--ease-standard); }
+.tab:hover, .tab.is-hover { color: var(--color-ink); border-bottom-color: var(--color-muted); }
+.tab[aria-selected=&quot;true&quot;] { color: var(--color-primary); border-bottom-color: var(--color-primary); }
+
+/* Accordion (native details) */
+.accordion details { border-bottom: 1px solid var(--color-divider); }
+.accordion summary { display: flex; align-items: center; justify-content: space-between; gap: var(--space-4); min-height: var(--control-h); padding-block: var(--space-2); font-weight: var(--fw-medium); cursor: pointer; list-style: none; transition: color var(--dur-fast) var(--ease-standard); }
+.accordion summary::-webkit-details-marker { display: none; }
+.accordion summary::after { content: &quot;+&quot;; font-size: 1.25rem; line-height: 1; color: var(--color-primary); }
+.accordion details[open] summary::after { content: &quot;\2212&quot;; }
+.accordion summary:hover { color: var(--color-primary); }
+.accordion details &gt; :not(summary) { padding-bottom: var(--space-4); color: var(--color-muted); }
+
+/* Notice */
+.notice { display: grid; grid-template-columns: auto 1fr; gap: var(--space-3); padding: var(--space-4); border: 1px solid; border-radius: var(--radius-sm); font-size: var(--fs-ui); line-height: var(--lh-ui); }
+.notice strong { display: block; font-weight: var(--fw-semibold); }
+.notice svg { width: 20px; height: 20px; flex: none; }
+.notice--info { background: var(--color-tint); color: var(--color-primary); border-color: color-mix(in srgb, var(--color-primary) 35%, transparent); }
+.notice--success { background: var(--color-success-tint); color: var(--color-success-text); border-color: var(--color-success); }
+.notice--warning { background: var(--color-warning-tint); color: var(--color-warning-text); border-color: var(--color-warning); }
+.notice--danger { background: var(--color-danger-tint); color: var(--color-danger-text); border-color: var(--color-danger); }
+.notice__body { color: var(--color-ink); }
+
+/* Table */
+.table { width: 100%; border-collapse: collapse; font-size: var(--fs-ui); line-height: var(--lh-ui); }
+.table caption { text-align: left; padding-bottom: var(--space-3); color: var(--color-muted); }
+.table th { text-align: left; padding: var(--space-3) var(--space-4); font-weight: var(--fw-semibold); color: var(--color-muted); border-bottom: 1px solid var(--color-muted); background: var(--color-paper); }
+.table td { padding: var(--space-3) var(--space-4); border-bottom: 1px solid var(--color-divider); }
+.table tbody tr { transition: background-color var(--dur-instant) var(--ease-standard); }
+.table tbody tr:hover, .table tbody tr.is-hover { background: var(--color-tint); }
+
+/* Empty state */
+.empty { box-sizing: border-box; display: grid; gap: var(--space-3); justify-items: center; text-align: center; padding: var(--space-7) var(--space-5); border: 1px dashed var(--color-muted); border-radius: var(--radius-md); background: var(--color-paper); }
+.empty p { color: var(--color-muted); }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; scroll-behavior: auto !important; }
+  .btn:hover, .card--interactive:hover { transform: none; }
+}
+</pre>
+      <h3 class="doc-sub">Using it</h3>
+      <ol class="doc-list">
+        <li>Self-host <code>InterVariable.woff2</code> and enable the commented <code>@font-face</code> at the top of the tokens. The site's policy (<code>default-src 'self'</code>) blocks Google Fonts.</li>
+        <li>Load the tokens first, then base and components, then page styles. In the app, review the <code>--primary: #0a88db</code> token (3.8:1 with white) and align it to the primary.</li>
+        <li>Use token names in new CSS and replace the values listed in the migration map as pages are touched.</li>
+      </ol>
+    </section>
+
+    <section class="doc-sec" id="open" aria-labelledby="h-open">
+      <h2 id="h-open">Open decisions</h2>
+      <ul class="doc-list">
+        <li><b>Dark mode</b> is not proposed. Both products are light, and the demo section already carries a dark band.</li>
+        <li><b>Icons</b> are limited to the four status icons shown. An icon set for the app needs its own decision.</li>
+        <li><b>Charts</b> need their own palette. Use the primary and the secondary as the first two series until a data palette is designed.</li>
+        <li><b>Logo color</b>: route A moves the logo blue from #0878f9 to #0b63ce so that one blue passes contrast everywhere. This is a brand decision for the client; the logo files are not changed here.</li>
+        <li><b>Calculated colors</b> use <code>color-mix()</code>, supported by all current browsers. If an older browser must be supported, replace the calculated tokens with their results from the table above.</li>
+        <li><b>Recommended plan</b> in the pricing pattern is an example. The owner chooses.</li>
+        <li><b>To validate on the real pages:</b> check headline tracking and line breaks with Inter loaded, and test the type scale on a phone.</li>
+      </ul>
+    </section>
+  </main>
+</div>
+
+<script>
+(function () {
+  var tabs = document.querySelectorAll('[role="tab"]');
+  var texts = {
+    t1: "A returning issue should come with its history. Connect the new conversation to the previous request.",
+    t2: "The location, access permission and issue description belong with the request.",
+    t3: "Look across open follow-ups and repeated requests. Start with the signal."
+  };
+  tabs.forEach(function (t) {
+    t.addEventListener('click', function () {
+      tabs.forEach(function (o) { o.setAttribute('aria-selected', String(o === t)); });
+      document.getElementById('tabtext').textContent = texts[t.id];
+    });
+  });
+
+  document.querySelectorAll('[data-copy]').forEach(function (b) {
+    b.addEventListener('click', function () {
+      var el = document.getElementById(b.getAttribute('data-copy'));
+      var label = b.textContent;
+      function done(ok) { b.textContent = ok ? 'Copied' : 'Select the text and copy'; setTimeout(function () { b.textContent = label; }, 1800); }
+      try {
+        navigator.clipboard.writeText(el.textContent).then(function () { done(true); }, function () { done(false); });
+      } catch (e) {
+        var r = document.createRange(); r.selectNodeContents(el);
+        var s = window.getSelection(); s.removeAllRanges(); s.addRange(r); done(false);
+      }
+    });
+  });
+
+  var form = document.getElementById('cf');
+  function flag(id, bad) {
+    var input = document.getElementById(id), err = document.getElementById(id + '-e');
+    if (input.type === 'checkbox') { err.hidden = !bad; return; }
+    input.setAttribute('aria-invalid', bad ? 'true' : 'false');
+    if (bad) input.setAttribute('aria-describedby', id + '-e'); else input.removeAttribute('aria-describedby');
+    err.hidden = !bad;
+  }
+  form.addEventListener('submit', function (e) {
+    e.preventDefault();
+    var ok = true;
+    var name = document.getElementById('cn').value.trim();
+    var email = document.getElementById('ce').value.trim();
+    var consent = document.getElementById('cc').checked;
+    var badName = !name, badEmail = !/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email), badConsent = !consent;
+    flag('cn', badName); flag('ce', badEmail); flag('cc', badConsent);
+    ok = !(badName || badEmail || badConsent);
+    document.getElementById('cf-ok').hidden = !ok;
+    if (!ok) { var first = form.querySelector('[aria-invalid="true"], #cc'); (badName ? document.getElementById('cn') : badEmail ? document.getElementById('ce') : document.getElementById('cc')).focus(); }
+  });
+  form.addEventListener('reset', function () {
+    ['cn', 'ce', 'cc'].forEach(function (id) { flag(id, false); });
+    document.getElementById('cf-ok').hidden = true;
+  });
+})();
+</script>
+</body>
+</html>
